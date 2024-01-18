@@ -36,12 +36,21 @@ public class RatingController {
     @PostMapping("/rating/validate")
     public String validate(@Valid Rating rating, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return Rating list
+        if (ratingService.getbyid(rating.getId()).isPresent() && result.hasFieldErrors()){
+            logger.info("validation problem occurred");
+            return "rating/add";
+        }
+        ratingService.saveRating(rating);
+        logger.info("recording successfully completed");
         return "rating/add";
     }
 
     @GetMapping("/rating/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         // TODO: get Rating by Id and to model then show to the form
+        Rating rating = ratingService.getbyid(id).orElseThrow(()-> new IllegalArgumentException("Invalid id:" + id));
+        logger.info(rating.toString());
+        model.addAttribute("rating", ratingService.getbyid(id));
         return "rating/update";
     }
 
@@ -49,6 +58,13 @@ public class RatingController {
     public String updateRating(@PathVariable("id") Integer id, @Valid Rating rating,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Rating and return Rating list
+        if (!ratingService.getbyid(id).isPresent() && result.hasFieldErrors()){
+            logger.info("Invalid id:" + id + "or a validation problem occurred");
+            return "rating/list";
+        }
+        ratingService.saveRating(rating);
+        logger.info("update successful");
+        model.addAttribute("rating", ratingService.getAllRatings());
         return "redirect:/rating/list";
     }
 

@@ -35,12 +35,12 @@ public class BidListController {
     @PostMapping("/bidList/validate")
     public String validate(@Valid BidList bid, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return bid list
-        if (!bigListService.getbyid(bid.getBidListId()).isPresent() && result.hasFieldErrors()){
+        if (bigListService.getbyid(bid.getBidListId()).isPresent() && result.hasFieldErrors()){
             logger.info("validation problem occurred");
             return "bidList/add";
         }
-        logger.info(bid.toString());
         bigListService.saveBidList(bid);
+        logger.info("recording successfully completed");
         model.addAttribute("bidlist", bigListService.getAllBidLists());
         return "bidList/add";
     }
@@ -62,8 +62,8 @@ public class BidListController {
             logger.info("Invalid id:" + id + "or a validation problem occurred");
             return "bidList/update";
         }
-        logger.info(bidList.toString());
         bigListService.saveBidList(bidList);
+        logger.info("update successful");
         model.addAttribute("bidlist", bigListService.getAllBidLists());
         return "redirect:/bidList/list";
     }

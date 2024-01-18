@@ -35,7 +35,7 @@ public class CurveController {
     @PostMapping("/curvePoint/validate")
     public String validate(@Valid CurvePoint curvePoint, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return Curve list
-        if (!curvePointService.getCurvePoint(curvePoint.getId()).isPresent() && result.hasFieldErrors()){
+        if (curvePointService.getCurvePoint(curvePoint.getId()).isPresent() && result.hasFieldErrors()){
             logger.info("validation problem occurred");
             return "curvePoint/add";
         }
@@ -49,7 +49,7 @@ public class CurveController {
         // TODO: get CurvePoint by Id and to model then show to the form
         CurvePoint curvePoint = curvePointService.getCurvePoint(id).orElseThrow(()-> new IllegalArgumentException("Invalid id:" + id));
         logger.info(curvePoint.toString());
-        model.addAttribute("curvepoint", curvePointService.getAllCurvePoints());
+        model.addAttribute("curvepoint", curvePoint);
         return "curvePoint/update";
     }
 
@@ -61,8 +61,8 @@ public class CurveController {
             logger.info("Invalid id:" + id + "or a validation problem occurred");
             return "curvePoint/list";
         }
-        logger.info(curvePoint.toString());
         curvePointService.saveCurvePoint(curvePoint);
+        logger.info("update successful");
         model.addAttribute("curvepoint", curvePointService.getAllCurvePoints());
         return "redirect:/curvePoint/list";
     }
