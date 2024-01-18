@@ -19,6 +19,8 @@ public class RatingController {
     @Autowired
     RatingService ratingService;
 
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(RatingController.class.getName());
+
     @RequestMapping("/rating/list")
     public String home(Model model)
     {
@@ -53,6 +55,10 @@ public class RatingController {
     @GetMapping("/rating/delete/{id}")
     public String deleteRating(@PathVariable("id") Integer id, Model model) {
         // TODO: Find Rating by Id and delete the Rating, return to Rating list
+        Rating rating = ratingService.getbyid(id).orElseThrow(()-> new  IllegalArgumentException("Invalid rating id:" + id));
+        logger.info(rating.toString());
+        ratingService.deleteRating(rating);
+        model.addAttribute("rating", ratingService.getAllRatings());
         return "redirect:/rating/list";
     }
 }

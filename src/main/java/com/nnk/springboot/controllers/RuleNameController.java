@@ -18,6 +18,7 @@ import javax.validation.Valid;
 public class RuleNameController {
     @Autowired
     RuleNameService ruleNameService;
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(RuleNameController.class.getName());
 
     @RequestMapping("/ruleName/list")
     public String home(Model model)
@@ -53,6 +54,10 @@ public class RuleNameController {
     @GetMapping("/ruleName/delete/{id}")
     public String deleteRuleName(@PathVariable("id") Integer id, Model model) {
         // TODO: Find RuleName by Id and delete the RuleName, return to Rule list
+        RuleName ruleName = ruleNameService.getById(id).orElseThrow(()-> new IllegalArgumentException("Invalid id:" + id));
+        logger.info(ruleName.toString());
+        ruleNameService.deleteRuleName(ruleName);
+        model.addAttribute("rulename", ruleNameService.getAllRuleNames());
         return "redirect:/ruleName/list";
     }
 }

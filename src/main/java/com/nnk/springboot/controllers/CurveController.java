@@ -18,6 +18,8 @@ public class CurveController {
     @Autowired
     CurvePointService curvePointService;
 
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CurveController.class.getName());
+
     @RequestMapping("/curvePoint/list")
     public String home(Model model)
     {
@@ -52,6 +54,10 @@ public class CurveController {
     @GetMapping("/curvePoint/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
         // TODO: Find Curve by Id and delete the Curve, return to Curve list
+        CurvePoint curvePoint = curvePointService.getCurvePoint(id).orElseThrow(()-> new IllegalArgumentException("Invalid curvepoint id:" + id));
+        logger.info(curvePoint.toString());
+        curvePointService.deleteCurvePoint(curvePoint);
+        model.addAttribute("curvepoint", curvePointService.getAllCurvePoints());
         return "redirect:/curvePoint/list";
     }
 }

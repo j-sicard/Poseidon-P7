@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CurvePointServiceImpl implements CurvePointService {
@@ -22,11 +23,13 @@ public class CurvePointServiceImpl implements CurvePointService {
         curvePointRepository.save(curvePoint);
     }
 
-    public void deleteCurvePoint(Integer id){
-        curvePointRepository.deleteById(id);
+    public void deleteCurvePoint(CurvePoint curvePoint){
+        curvePointRepository.delete(curvePoint);
     }
 
-    public void getCurvePoint(Integer id){
-        curvePointRepository.findById(id);
+    public Optional<CurvePoint> getCurvePoint(Integer id){
+       return curvePointRepository.findById(id);
     }
+
+
 }

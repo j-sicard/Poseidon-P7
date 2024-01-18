@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BigListServiceImpl implements BigListService {
@@ -22,13 +23,20 @@ public class BigListServiceImpl implements BigListService {
         bidListRepository.save(bidList);
     }
 
-    public void deleteBidListById(Integer bidListId){
-        bidListRepository.deleteById(bidListId);
+    public void deleteBidList(BidList bidList){
+        bidListRepository.delete(bidList);
     }
 
     public void getBidListById(Integer bidListId){
         bidListRepository.findById(bidListId);
     }
 
+    public Boolean checkIfExist(Integer id){
+      return bidListRepository.existsById(id);
+    }
+
+    public Optional<BidList> getbyid(Integer id){
+        return bidListRepository.findById(id);
+    }
 
 }

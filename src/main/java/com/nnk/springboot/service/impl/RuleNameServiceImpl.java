@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RuleNameServiceImpl implements RuleNameService {
@@ -21,8 +22,12 @@ public class RuleNameServiceImpl implements RuleNameService {
         ruleNameRepository.save(ruleName);
     }
 
-    public void  deleteRuleName(Integer id){
-        ruleNameRepository.deleteById(id);
+    public void  deleteRuleName(RuleName ruleName){
+        ruleNameRepository.delete(ruleName);
+    }
+
+    public Optional<RuleName>getById(Integer id){
+        return ruleNameRepository.findById(id);
     }
 
 }

@@ -42,10 +42,13 @@ public class BidTests extends AbstractConfigurationTest{
 		System.out.println("List size: " + listResult.size());
 		Assert.assertTrue(listResult.size() > 0);
 
+		// FindById
+		Assert.assertTrue(bigListService.getbyid(bidList.getBidListId()).isPresent());
+
 
 		// Delete
 		Integer id = bidList.getBidListId();
-		bigListService.deleteBidListById(id);
+		bigListService.deleteBidList(bidList);
 		Optional<BidList> bidLists = bidListRepository.findById(id);
 		Assert.assertFalse(bidLists.isPresent());
 	}

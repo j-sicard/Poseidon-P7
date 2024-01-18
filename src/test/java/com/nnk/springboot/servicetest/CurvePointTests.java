@@ -41,9 +41,12 @@ public class CurvePointTests extends AbstractConfigurationTest {
 		List<CurvePoint> listResult = curvePointService.getAllCurvePoints();
 		Assert.assertTrue(listResult.size() > 0);
 
+		// FindById
+		Assert.assertTrue(curvePointService.getCurvePoint(curvePoint.getId()).isPresent());
+
 		// Delete
 		Integer id = curvePoint.getId();
-		curvePointService.deleteCurvePoint(id);
+		curvePointService.deleteCurvePoint(curvePoint);
 		Optional<CurvePoint> curvePointList = curvePointRepository.findById(id);
 		Assert.assertFalse(curvePointList.isPresent());
 	}

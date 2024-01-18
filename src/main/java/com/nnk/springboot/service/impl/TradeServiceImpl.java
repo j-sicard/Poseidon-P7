@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TradeServiceImpl implements TradeService {
@@ -17,12 +18,16 @@ public class TradeServiceImpl implements TradeService {
         return tradeRepository.findAll();
     }
 
-    public void deleteTrade(Integer tradeId){
-        tradeRepository.deleteById(tradeId);
+    public void deleteTrade(Trade trade){
+        tradeRepository.delete(trade);
     }
 
     public void saveTrade(Trade trade){
         tradeRepository.save(trade);
+    }
+
+    public Optional<Trade> getById(Integer id){
+        return tradeRepository.findById(id);
     }
 
 }

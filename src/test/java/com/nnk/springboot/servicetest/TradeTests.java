@@ -40,9 +40,12 @@ public class TradeTests extends AbstractConfigurationTest {
 		List<Trade> listResult = tradeService.getAllTrades();
 		Assert.assertTrue(listResult.size() > 0);
 
+		//FindById
+		Assert.assertTrue(tradeService.getById(trade.getTradeId()).isPresent());
+
 		// Delete
 		Integer id = trade.getTradeId();
-		tradeService.deleteTrade(id);
+		tradeService.deleteTrade(trade);
 		Optional<Trade> tradeList = tradeRepository.findById(id);
 		Assert.assertFalse(tradeList.isPresent());
 	}

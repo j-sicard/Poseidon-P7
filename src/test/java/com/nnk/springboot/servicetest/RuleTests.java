@@ -44,9 +44,12 @@ public class RuleTests extends AbstractConfigurationTest {
 		List<RuleName> listResult = ruleNameService.getAllRuleNames();
 		Assert.assertTrue(listResult.size() > 0);
 
+		// FindById
+		Assert.assertTrue(ruleNameService.getById(rule.getId()).isPresent());
+
 		// Delete
 		Integer id = rule.getId();
-		ruleNameService.deleteRuleName(id);
+		ruleNameService.deleteRuleName(rule);
 		Optional<RuleName> ruleList = ruleNameRepository.findById(id);
 		Assert.assertFalse(ruleList.isPresent());
 	}

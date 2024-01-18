@@ -1,6 +1,7 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.BidList;
+import com.nnk.springboot.repositories.BidListRepository;
 import com.nnk.springboot.service.BigListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
+import java.util.function.Supplier;
 
 /*import javax.validation.Valid;*/
 
@@ -20,6 +22,11 @@ import javax.validation.Valid;
 public class BidListController {
     @Autowired
     BigListService bigListService;
+
+    @Autowired
+    BidListRepository bidListRepository;
+
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(BidListController.class.getName());
 
     @RequestMapping("/bidList/list")
     public String home(Model model)
@@ -54,7 +61,11 @@ public class BidListController {
 
     @GetMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
-        // TODO: Find Bid by Id and delete the bid, return to Bid list
+        // TODO: Find Bid by Id and delete the bid, return to Bid list*
+        BidList bid = bigListService.getbyid(id).orElseThrow(()-> new IllegalArgumentException("Invalide bid Id:" + id));
+        logger.info(bid.toString());
+        bigListService.deleteBidList(bid);
+        model.addAttribute("bidlist", bigListService.getAllBidLists());
         return "redirect:/bidList/list";
     }
 }

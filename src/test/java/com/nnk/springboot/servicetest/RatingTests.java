@@ -47,9 +47,12 @@ public class RatingTests extends AbstractConfigurationTest {
 		List<Rating> listResult = ratingService.getAllRatings();
 		Assert.assertTrue(listResult.size() > 0);
 
+		// FindById
+		Assert.assertTrue(ratingService.getbyid(rating.getId()).isPresent());
+
 		// Delete
 		Integer id = rating.getId();
-		ratingService.deleteRating(id);
+		ratingService.deleteRating(rating);
 		Optional<Rating> ratingList = ratingRepository.findById(id);
 		Assert.assertFalse(ratingList.isPresent());
 	}

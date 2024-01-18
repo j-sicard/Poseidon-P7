@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RatingServiceImpl implements RatingService {
@@ -21,7 +22,11 @@ public class RatingServiceImpl implements RatingService {
          ratingRepository.save(rating);
     }
 
-    public void deleteRating(Integer id){
-        ratingRepository.deleteById(id);
+    public void deleteRating(Rating rating){
+        ratingRepository.delete(rating);
+    }
+
+    public Optional<Rating> getbyid(Integer id){
+        return ratingRepository.findById(id);
     }
 }

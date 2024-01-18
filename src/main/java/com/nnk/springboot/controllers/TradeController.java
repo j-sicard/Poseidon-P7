@@ -18,6 +18,7 @@ import javax.validation.Valid;
 public class TradeController {
     @Autowired
     TradeService tradeService;
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TradeController.class.getName());
 
     @RequestMapping("/trade/list")
     public String home(Model model)
@@ -53,6 +54,10 @@ public class TradeController {
     @GetMapping("/trade/delete/{id}")
     public String deleteTrade(@PathVariable("id") Integer id, Model model) {
         // TODO: Find Trade by Id and delete the Trade, return to Trade list
+        Trade trade = tradeService.getById(id).orElseThrow(()-> new  IllegalArgumentException("Invalid id:" + id));
+        logger.info(trade.toString());
+        tradeService.deleteTrade(trade);
+        model.addAttribute("trade", tradeService.getAllTrades());
         return "redirect:/trade/list";
     }
 }
