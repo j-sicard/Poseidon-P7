@@ -35,7 +35,7 @@ public class BidListController {
     @PostMapping("/bidList/validate")
     public String validate(@Valid BidList bid, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return bid list
-        if (result.hasFieldErrors()){
+        if (!bigListService.getbyid(bid.getBidListId()).isPresent() && result.hasFieldErrors()){
             logger.info("validation problem occurred");
             return "bidList/add";
         }
