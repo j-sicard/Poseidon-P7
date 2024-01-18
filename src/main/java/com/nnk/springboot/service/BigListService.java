@@ -9,8 +9,6 @@ public interface BigListService {
     public List<BidList> getAllBidLists();
     public void saveBidList(BidList bidList);
     public void deleteBidList(BidList bidList);
-    public void getBidListById(Integer bidListId);
     public Boolean checkIfExist(Integer id);
-
     public Optional<BidList> getbyid(Integer id);
 }
