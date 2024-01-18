@@ -35,12 +35,22 @@ public class RuleNameController {
     @PostMapping("/ruleName/validate")
     public String validate(@Valid RuleName ruleName, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return RuleName list
+        if (ruleNameService.getById(ruleName.getId()).isPresent() && result.hasFieldErrors()){
+            logger.info("validation problem occurred");
+            return "ruleName/add";
+        }
+        ruleNameService.saveRuleName(ruleName);
+        logger.info("recording successfully completed");
+        model.addAttribute("rating", ruleNameService.getAllRuleNames());
         return "ruleName/add";
     }
 
     @GetMapping("/ruleName/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         // TODO: get RuleName by Id and to model then show to the form
+        RuleName ruleName = ruleNameService.getById(id).orElseThrow(() -> new IllegalArgumentException("Invalid id:" + id));
+        logger.info(ruleName.toString());
+        model.addAttribute("rulename", ruleNameService.getById(id));
         return "ruleName/update";
     }
 
@@ -48,6 +58,13 @@ public class RuleNameController {
     public String updateRuleName(@PathVariable("id") Integer id, @Valid RuleName ruleName,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update RuleName and return RuleName list
+        if (!ruleNameService.getById(ruleName.getId()).isPresent() && result.hasFieldErrors()){
+            logger.info("Invalid id:" + id + "or a validation problem occurred");
+            return "ruleName/list";
+        }
+        ruleNameService.saveRuleName(ruleName);
+        logger.info("update successful");
+        model.addAttribute("rulename", ruleNameService.getAllRuleNames());
         return "redirect:/ruleName/list";
     }
 
