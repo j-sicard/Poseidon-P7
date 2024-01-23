@@ -25,23 +25,26 @@ public class RatingController {
     public String home(Model model)
     {
         model.addAttribute("rating", ratingService.getAllRatings());
+        logger.info("rating/list : OK");
         return "rating/list";
     }
 
     @GetMapping("/rating/add")
-    public String addRatingForm(Rating rating) {
+    public String addRatingForm(Model model) {
+        model.addAttribute("rating", new Rating());
+        logger.info("GetMapping(\"/rating/add\") successfully");
         return "rating/add";
     }
 
     @PostMapping("/rating/validate")
     public String validate(@Valid Rating rating, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return Rating list
-        if (ratingService.getbyid(rating.getId()).isPresent() && result.hasFieldErrors()){
-            logger.info("validation problem occurred");
-            return "rating/add";
+        if (!result.hasErrors()){
+            ratingService.saveRating(rating);
+            logger.info("recording successfully completed");
+            return "redirect:/rating/list";
         }
-        ratingService.saveRating(rating);
-        logger.info("recording successfully completed");
+        logger.info("validation problem occurred /rating/validate");
         return "rating/add";
     }
 
@@ -49,8 +52,8 @@ public class RatingController {
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         // TODO: get Rating by Id and to model then show to the form
         Rating rating = ratingService.getbyid(id).orElseThrow(()-> new IllegalArgumentException("Invalid id:" + id));
-        logger.info(rating.toString());
-        model.addAttribute("rating", ratingService.getbyid(id));
+        logger.info("/rating/update/{id}" +rating.toString());
+        model.addAttribute("rating", rating);
         return "rating/update";
     }
 
@@ -58,21 +61,24 @@ public class RatingController {
     public String updateRating(@PathVariable("id") Integer id, @Valid Rating rating,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Rating and return Rating list
-        if (!ratingService.getbyid(id).isPresent() && result.hasFieldErrors()){
-            logger.info("Invalid id:" + id + "or a validation problem occurred");
-            return "rating/list";
+        if (!ratingService.getbyid(id).isPresent()){
+            logger.info("Invalid id:" + id);
+            return "redirect:/rating/list";
         }
-        ratingService.saveRating(rating);
-        logger.info("update successful");
-        model.addAttribute("rating", ratingService.getAllRatings());
-        return "redirect:/rating/list";
+        if (!result.hasErrors()){
+            ratingService.saveRating(rating);
+            logger.info("update successful");
+            return "redirect:/rating/list";
+        }
+        logger.info("validation problem occurred ( /rating/update/{id} )");
+        return "/rating/add";
     }
 
     @GetMapping("/rating/delete/{id}")
     public String deleteRating(@PathVariable("id") Integer id, Model model) {
         // TODO: Find Rating by Id and delete the Rating, return to Rating list
         Rating rating = ratingService.getbyid(id).orElseThrow(()-> new  IllegalArgumentException("Invalid rating id:" + id));
-        logger.info(rating.toString());
+        logger.info("/rating/delete/{id}" + rating.toString());
         ratingService.deleteRating(rating);
         model.addAttribute("rating", ratingService.getAllRatings());
         return "redirect:/rating/list";

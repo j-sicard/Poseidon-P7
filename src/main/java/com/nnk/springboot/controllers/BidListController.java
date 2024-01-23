@@ -23,25 +23,27 @@ public class BidListController {
     @RequestMapping("/bidList/list")
     public String home(Model model)
     {
-        model.addAttribute("bidlist", bigListService.getAllBidLists());
+        model.addAttribute("bidList", bigListService.getAllBidLists());
+        logger.info("bidList/list : OK");
         return "bidList/list";
     }
 
     @GetMapping("/bidList/add")
-    public String addBidForm(BidList bid) {
+    public String addBidForm(Model model) {
+        model.addAttribute("bidList", new BidList());
+        logger.info("GetMapping(\"/bidList/add\") successfully");
         return "bidList/add";
     }
 
     @PostMapping("/bidList/validate")
-    public String validate(@Valid BidList bid, BindingResult result, Model model) {
+    public String validate(@Valid BidList bidList, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return bid list
-        if (bigListService.getbyid(bid.getBidListId()).isPresent() && result.hasFieldErrors()){
-            logger.info("validation problem occurred");
-            return "bidList/add";
+        if (!result.hasErrors()){
+            bigListService.saveBidList(bidList);
+            logger.info("recording successfully completed");
+            return "redirect:/bidList/list";
         }
-        bigListService.saveBidList(bid);
-        logger.info("recording successfully completed");
-        model.addAttribute("bidlist", bigListService.getAllBidLists());
+        logger.info("validation problem occurred ( /bidList/validate )");
         return "bidList/add";
     }
 
@@ -49,8 +51,8 @@ public class BidListController {
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         // TODO: get Bid by Id and to model then show to the form
         BidList bidList = bigListService.getbyid(id).orElseThrow(()-> new IllegalArgumentException("Invalid id:" + id));
-        logger.info(bidList.toString());
-        model.addAttribute("bidlist", bidList);
+        logger.info("/bidList/update/{id}" + bidList.toString());
+        model.addAttribute("bidList", bidList);
         return "bidList/update";
     }
 
@@ -58,23 +60,26 @@ public class BidListController {
     public String updateBid(@PathVariable("id") Integer id, @Valid BidList bidList,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Bid and return list Bid
-        if (!bigListService.getbyid(id).isPresent() && result.hasFieldErrors()){
-            logger.info("Invalid id:" + id + "or a validation problem occurred");
-            return "bidList/update";
+        if (!bigListService.getbyid(id).isPresent()){
+            logger.info("Invalid id:" + id);
+            return "redirect:/bidList/list";
         }
-        bigListService.saveBidList(bidList);
-        logger.info("update successful");
-        model.addAttribute("bidlist", bigListService.getAllBidLists());
-        return "redirect:/bidList/list";
+        if (!result.hasErrors()){
+            bigListService.saveBidList(bidList);
+            logger.info("update successful");
+            return "redirect:/bidList/list";
+        }
+        logger.info("validation problem occurred ( /bidList/update/{id} )");
+        return "/bidList/add";
     }
 
     @GetMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
         // TODO: Find Bid by Id and delete the bid, return to Bid list*
-        BidList bid = bigListService.getbyid(id).orElseThrow(()-> new IllegalArgumentException("Invalide bid Id:" + id));
-        logger.info(bid.toString());
-        bigListService.deleteBidList(bid);
-        model.addAttribute("bidlist", bigListService.getAllBidLists());
+        BidList bidList = bigListService.getbyid(id).orElseThrow(()-> new IllegalArgumentException("Invalide bid Id:" + id));
+        logger.info("/bidList/delete/{id}" + bidList.toString());
+        bigListService.deleteBidList(bidList);
+        model.addAttribute("bidList", bigListService.getAllBidLists());
         return "redirect:/bidList/list";
     }
 }

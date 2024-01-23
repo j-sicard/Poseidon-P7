@@ -23,25 +23,27 @@ public class RuleNameController {
     @RequestMapping("/ruleName/list")
     public String home(Model model)
     {
-        model.addAttribute("rulename", ruleNameService.getAllRuleNames());
+        model.addAttribute("ruleName", ruleNameService.getAllRuleNames());
+        logger.info("ruleName/list : OK");
         return "ruleName/list";
     }
 
     @GetMapping("/ruleName/add")
-    public String addRuleForm(RuleName bid) {
+    public String addRuleForm(Model model) {
+        model.addAttribute("ruleName", new RuleName());
+        logger.info("GetMapping(\"/ruleName/add\") successfully");
         return "ruleName/add";
     }
 
     @PostMapping("/ruleName/validate")
     public String validate(@Valid RuleName ruleName, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return RuleName list
-        if (ruleNameService.getById(ruleName.getId()).isPresent() && result.hasFieldErrors()){
-            logger.info("validation problem occurred");
-            return "ruleName/add";
+        if (!result.hasErrors()){
+            ruleNameService.saveRuleName(ruleName);
+            logger.info("recording successfully completed");
+            return "redirect:/ruleName/list";
         }
-        ruleNameService.saveRuleName(ruleName);
-        logger.info("recording successfully completed");
-        model.addAttribute("rating", ruleNameService.getAllRuleNames());
+        logger.info("validation problem occurred/ruleName/validate");
         return "ruleName/add";
     }
 
@@ -49,8 +51,8 @@ public class RuleNameController {
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         // TODO: get RuleName by Id and to model then show to the form
         RuleName ruleName = ruleNameService.getById(id).orElseThrow(() -> new IllegalArgumentException("Invalid id:" + id));
-        logger.info(ruleName.toString());
-        model.addAttribute("rulename", ruleNameService.getById(id));
+        logger.info("/ruleName/update/{id}" + ruleName.toString());
+        model.addAttribute("ruleName", ruleName);
         return "ruleName/update";
     }
 
@@ -58,23 +60,26 @@ public class RuleNameController {
     public String updateRuleName(@PathVariable("id") Integer id, @Valid RuleName ruleName,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update RuleName and return RuleName list
-        if (!ruleNameService.getById(ruleName.getId()).isPresent() && result.hasFieldErrors()){
-            logger.info("Invalid id:" + id + "or a validation problem occurred");
-            return "ruleName/list";
+        if (!ruleNameService.getById(ruleName.getId()).isPresent()){
+            logger.info("Invalid id:" + id);
+            return "redirect:/ruleName/list";
         }
-        ruleNameService.saveRuleName(ruleName);
-        logger.info("update successful");
-        model.addAttribute("rulename", ruleNameService.getAllRuleNames());
-        return "redirect:/ruleName/list";
+        if (!result.hasErrors()){
+            ruleNameService.saveRuleName(ruleName);
+            logger.info("update successful");
+            return "redirect:/ruleName/list";
+        }
+        logger.info("validation problem occurred ( /ruleName/update/{id} )");
+        return "ruleName/add";
     }
 
     @GetMapping("/ruleName/delete/{id}")
     public String deleteRuleName(@PathVariable("id") Integer id, Model model) {
         // TODO: Find RuleName by Id and delete the RuleName, return to Rule list
         RuleName ruleName = ruleNameService.getById(id).orElseThrow(()-> new IllegalArgumentException("Invalid id:" + id));
-        logger.info(ruleName.toString());
+        logger.info("/ruleName/delete/{id}" +  ruleName.toString());
         ruleNameService.deleteRuleName(ruleName);
-        model.addAttribute("rulename", ruleNameService.getAllRuleNames());
+        model.addAttribute("ruleName", ruleNameService.getAllRuleNames());
         return "redirect:/ruleName/list";
     }
 }

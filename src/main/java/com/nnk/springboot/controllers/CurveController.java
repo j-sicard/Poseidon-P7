@@ -23,24 +23,27 @@ public class CurveController {
     @RequestMapping("/curvePoint/list")
     public String home(Model model)
     {
-        model.addAttribute("curvepoint", curvePointService.getAllCurvePoints());
+        model.addAttribute("curvePoint", curvePointService.getAllCurvePoints());
+        logger.info("curvePoint/list : OK");
         return "curvePoint/list";
     }
 
     @GetMapping("/curvePoint/add")
-    public String addBidForm(CurvePoint bid) {
+    public String addBidForm(Model model) {
+        model.addAttribute("curvePoint", new CurvePoint());
+        logger.info("GetMapping(\"/curvePoint/add\") successfully");
         return "curvePoint/add";
     }
 
     @PostMapping("/curvePoint/validate")
     public String validate(@Valid CurvePoint curvePoint, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return Curve list
-        if (curvePointService.getCurvePoint(curvePoint.getId()).isPresent() && result.hasFieldErrors()){
-            logger.info("validation problem occurred");
-            return "curvePoint/add";
+        if (!result.hasErrors()){
+            curvePointService.saveCurvePoint(curvePoint);
+            logger.info("recording successfully completed");
+            return "redirect:curvePoint/list";
         }
-        curvePointService.saveCurvePoint(curvePoint);
-        logger.info("recording successfully completed");
+        logger.info("validation problem occurred");
         return "curvePoint/add";
     }
 
@@ -49,7 +52,7 @@ public class CurveController {
         // TODO: get CurvePoint by Id and to model then show to the form
         CurvePoint curvePoint = curvePointService.getCurvePoint(id).orElseThrow(()-> new IllegalArgumentException("Invalid id:" + id));
         logger.info(curvePoint.toString());
-        model.addAttribute("curvepoint", curvePoint);
+        model.addAttribute("curvePoint", curvePoint);
         return "curvePoint/update";
     }
 
@@ -57,13 +60,15 @@ public class CurveController {
     public String updateBid(@PathVariable("id") Integer id, @Valid CurvePoint curvePoint,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Curve and return Curve list
-        if (!curvePointService.getCurvePoint(id).isPresent() && result.hasFieldErrors()){
-            logger.info("Invalid id:" + id + "or a validation problem occurred");
-            return "curvePoint/list";
+        if (!curvePointService.getCurvePoint(id).isPresent()){
+            logger.info("Invalid id:" + id);
+            return "redirect:/curvePoint/list";
         }
-        curvePointService.saveCurvePoint(curvePoint);
-        logger.info("update successful");
-        model.addAttribute("curvepoint", curvePointService.getAllCurvePoints());
+        if (!result.hasErrors()){
+            curvePointService.saveCurvePoint(curvePoint);
+            logger.info("update successful");
+        }
+        logger.info("validation problem occurred ( /bidList/curvePoint/{id} )");
         return "redirect:/curvePoint/list";
     }
 
@@ -73,7 +78,7 @@ public class CurveController {
         CurvePoint curvePoint = curvePointService.getCurvePoint(id).orElseThrow(()-> new IllegalArgumentException("Invalid curvepoint id:" + id));
         logger.info(curvePoint.toString());
         curvePointService.deleteCurvePoint(curvePoint);
-        model.addAttribute("curvepoint", curvePointService.getAllCurvePoints());
+        model.addAttribute("curvePoint", curvePointService.getAllCurvePoints());
         return "redirect:/curvePoint/list";
     }
 }
