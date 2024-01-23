@@ -24,24 +24,26 @@ public class TradeController {
     public String home(Model model)
     {
         model.addAttribute("trade", tradeService.getAllTrades());
+        logger.info("trade/list : OK");
         return "trade/list";
     }
 
     @GetMapping("/trade/add")
-    public String addUser(Trade bid) {
+    public String addUser(Model model) {
+        model.addAttribute("trade", new Trade());
+        logger.info("GetMapping(\"/trade/add\") successfully");
         return "trade/add";
     }
 
     @PostMapping("/trade/validate")
     public String validate(@Valid Trade trade, BindingResult result, Model model) {
         // TODO: check data valid and save to db, after saving return Trade list
-        if (tradeService.getById(trade.getTradeId()).isPresent() && result.hasFieldErrors()){
-            logger.info("validation problem occurred");
-            return "trade/add";
+        if (!result.hasErrors()){
+            tradeService.saveTrade(trade);
+            logger.info("recording successfully completed");
+            return "redirect:/trade/list";
         }
-        tradeService.saveTrade(trade);
-        logger.info("recording successfully completed");
-        model.addAttribute("trade", tradeService.getAllTrades());
+        logger.info("validation problem occurred (/trade/validate)");
         return "trade/add";
     }
 
@@ -49,8 +51,8 @@ public class TradeController {
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         // TODO: get Trade by Id and to model then show to the form
         Trade trade = tradeService.getById(id).orElseThrow(()-> new IllegalArgumentException("Invalid id:" + id));
-        logger.info(trade.toString());
-        model.addAttribute("trade", tradeService.getById(id));
+        logger.info("/trade/update/{id}" +trade.toString());
+        model.addAttribute("trade", trade);
         return "trade/update";
     }
 
@@ -58,21 +60,24 @@ public class TradeController {
     public String updateTrade(@PathVariable("id") Integer id, @Valid Trade trade,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Trade and return Trade list
-        if (!tradeService.getById(trade.getTradeId()).isPresent() && result.hasFieldErrors()){
-            logger.info("Invalid id:" + id + "or a validation problem occurred");
-            return "trade/list";
+        if (!tradeService.getById(id).isPresent()){
+            logger.info("Invalid id:" + id);
+            return "redirect:/trade/list";
         }
-        tradeService.saveTrade(trade);
-        logger.info("update successful");
-        model.addAttribute("trade", tradeService.getAllTrades());
-        return "redirect:/trade/list";
+        if (!result.hasErrors()){
+            tradeService.saveTrade(trade);
+            logger.info("update successful");
+            return "redirect:/trade/list";
+        }
+        logger.info("validation problem occurred ( /trade/update/{id} )");
+        return "/trade/add";
     }
 
     @GetMapping("/trade/delete/{id}")
     public String deleteTrade(@PathVariable("id") Integer id, Model model) {
         // TODO: Find Trade by Id and delete the Trade, return to Trade list
         Trade trade = tradeService.getById(id).orElseThrow(()-> new  IllegalArgumentException("Invalid id:" + id));
-        logger.info(trade.toString());
+        logger.info( "/trade/delete/{id}" + trade.toString());
         tradeService.deleteTrade(trade);
         model.addAttribute("trade", tradeService.getAllTrades());
         return "redirect:/trade/list";
