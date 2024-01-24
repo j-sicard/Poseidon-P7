@@ -1,7 +1,7 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.BidList;
-import com.nnk.springboot.service.BigListService;
+import com.nnk.springboot.service.BidListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +16,7 @@ import javax.validation.Valid;
 @Controller
 public class BidListController {
     @Autowired
-    BigListService bigListService;
+    BidListService bigListService;
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(BidListController.class.getName());
 
@@ -37,7 +37,6 @@ public class BidListController {
 
     @PostMapping("/bidList/validate")
     public String validate(@Valid BidList bidList, BindingResult result, Model model) {
-        // TODO: check data valid and save to db, after saving return bid list
         if (!result.hasErrors()){
             bigListService.saveBidList(bidList);
             logger.info("recording successfully completed");

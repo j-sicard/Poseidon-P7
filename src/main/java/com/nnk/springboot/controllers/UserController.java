@@ -33,7 +33,9 @@ public class UserController {
     }
 
     @GetMapping("/user/add")
-    public String addUser(User bid) {
+    public String addUserForm(Model model) {
+        model.addAttribute("user", new User());
+        logger.info("GetMapping(\"/user/add\") successfully");
         return "user/add";
     }
 

@@ -2,6 +2,7 @@ package com.nnk.springboot.controlleurtest;
 
 import com.nnk.springboot.AbstractConfigurationTest;
 import com.nnk.springboot.controllers.CurveController;
+import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.service.CurvePointService;
 import org.junit.Test;
@@ -9,21 +10,22 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
 
 public class CurveControllerTests extends AbstractConfigurationTest {
 
     @InjectMocks
     private CurveController curveController;
     @Mock
-    private CurvePointService pointService;
+    private CurvePointService curvePointService;
 
     @Mock
     private Model model;
@@ -37,7 +39,7 @@ public class CurveControllerTests extends AbstractConfigurationTest {
         List<CurvePoint> curvePoints = new ArrayList<>();
         curvePoints.add(curvePoint);
 
-        when(pointService.getAllCurvePoints()).thenReturn(curvePoints);
+        when(curvePointService.getAllCurvePoints()).thenReturn(curvePoints);
         String viewName = curveController.home(model);
 
         assertEquals("curvePoint/list", viewName);
@@ -51,5 +53,41 @@ public class CurveControllerTests extends AbstractConfigurationTest {
         assertEquals("curvePoint/add", viewName);
 
         verify(model).addAttribute(eq("curvePoint"), Mockito.any(CurvePoint.class));
+    }
+
+    @Test
+    public void validateCurveWithNoErrorsTest() {
+        // Objet CurvePoint valide
+        CurvePoint curvePoint = new CurvePoint();
+        curvePoint.setValue(10.0);
+
+        // Simuler un BindingResult sans erreurs
+        BindingResult result = mock(BindingResult.class);
+        when(result.hasErrors()).thenReturn(false);
+
+        // Appeler la méthode validate
+        String viewName = curveController.validate(curvePoint, result, model);
+
+        verify(curvePointService, times(1)).saveCurvePoint(curvePoint);
+
+        assertEquals("redirect:curvePoint/list", viewName);
+    }
+
+    @Test
+    public void validateCurveWithErrorsTest() {
+        // Objet curvePoint invalide
+        CurvePoint curvePoint = new CurvePoint();
+        curvePoint.setValue(-5.0);
+
+        // Simuler un BindingResult avec des erreurs
+        BindingResult result = mock(BindingResult.class);
+        when(result.hasErrors()).thenReturn(true);
+
+        String viewName = curveController.validate(curvePoint, result, model);
+
+        verify(curvePointService, never()).saveCurvePoint(curvePoint);
+
+        // Vérifier que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
+        assertEquals("curvePoint/add", viewName);
     }
 }

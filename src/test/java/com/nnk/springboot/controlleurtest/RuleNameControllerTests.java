@@ -2,6 +2,7 @@ package com.nnk.springboot.controlleurtest;
 
 import com.nnk.springboot.AbstractConfigurationTest;
 import com.nnk.springboot.controllers.RuleNameController;
+import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.domain.RuleName;;
 import com.nnk.springboot.service.RuleNameService;
@@ -10,14 +11,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
 
 public class RuleNameControllerTests extends AbstractConfigurationTest {
     @InjectMocks
@@ -56,5 +58,41 @@ public class RuleNameControllerTests extends AbstractConfigurationTest {
         assertEquals("ruleName/add", viewName);
 
         verify(model).addAttribute(eq("ruleName"), Mockito.any(RuleName.class));
+    }
+
+    @Test
+    public void validateRuleNameWithNoErrorsTest() {
+        // Objet RuleName valide
+        RuleName ruleName = new RuleName();
+        ruleName.setName("NameTest");
+
+        // Simuler un BindingResult sans erreurs
+        BindingResult result = mock(BindingResult.class);
+        when(result.hasErrors()).thenReturn(false);
+
+        // Appeler la méthode validate
+        String viewName = ruleNameController.validate(ruleName, result, model);
+
+        verify(ruleNameService, times(1)).saveRuleName(ruleName);
+
+        assertEquals("redirect:/ruleName/list", viewName);
+    }
+
+    @Test
+    public void validateRuleNameWithErrorsTest() {
+        // Objet RuleName invalide
+        RuleName ruleName = new RuleName();
+        ruleName.setName("10");
+
+        // Simuler un BindingResult avec des erreurs
+        BindingResult result = mock(BindingResult.class);
+        when(result.hasErrors()).thenReturn(true);
+
+        String viewName = ruleNameController.validate(ruleName, result, model);
+
+        verify(ruleNameService, never()).saveRuleName(ruleName);
+
+        // Vérifier que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
+        assertEquals("ruleName/add", viewName);
     }
 }

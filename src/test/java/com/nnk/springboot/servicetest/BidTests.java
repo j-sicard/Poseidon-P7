@@ -3,7 +3,7 @@ package com.nnk.springboot.servicetest;
 import com.nnk.springboot.AbstractConfigurationTest;
 import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.repositories.BidListRepository;
-import com.nnk.springboot.service.BigListService;
+import com.nnk.springboot.service.BidListService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class BidTests extends AbstractConfigurationTest{
 	@Autowired
 	private BidListRepository bidListRepository;
 	@Autowired
-	private BigListService bigListService;
+	private BidListService bigListService;
 
 	@Test
 	public void bidListTest() {
