@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
@@ -89,5 +90,24 @@ public class CurveControllerTests extends AbstractConfigurationTest {
 
         // Vérifier que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
         assertEquals("curvePoint/add", viewName);
+    }
+
+    @Test
+    public void testShowUpdateForm() {
+        Integer curveId = 1;
+        CurvePoint expectedCurvePoint = new CurvePoint();
+        expectedCurvePoint.setCurveId(curveId);
+
+        // retourne l'enchère simulée lorsque getCurvePoint est appelé
+        when(curvePointService.getCurvePoint(curveId)).thenReturn(Optional.of(expectedCurvePoint));
+
+        // Appelez la méthode showUpdateForm
+        String viewName = curveController.showUpdateForm(curveId, model);
+
+        // Vérifie que l'objet CurvePoint a été ajouté au modèle avec le nom "curvePoint"
+        verify(model).addAttribute("curvePoint", expectedCurvePoint);
+
+        // Vérifie que le nom de la vue retournée est "curvePoint/update"
+        assertEquals("curvePoint/update", viewName);
     }
 }

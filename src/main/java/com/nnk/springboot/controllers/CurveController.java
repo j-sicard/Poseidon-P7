@@ -81,4 +81,6 @@ public class CurveController {
         model.addAttribute("curvePoint", curvePointService.getAllCurvePoints());
         return "redirect:/curvePoint/list";
     }
+
+
 }

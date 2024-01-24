@@ -3,6 +3,7 @@ package com.nnk.springboot.controlleurtest;
 import com.nnk.springboot.AbstractConfigurationTest;
 import com.nnk.springboot.controllers.RatingController;
 import com.nnk.springboot.domain.BidList;
+import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.service.RatingService;
 import org.junit.Test;
@@ -14,6 +15,7 @@ import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
@@ -91,5 +93,24 @@ public class ratingControllerTests extends AbstractConfigurationTest {
 
         // Vérifier que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
         assertEquals("rating/add", viewName);
+    }
+
+    @Test
+    public void testShowUpdateForm() {
+        Integer ratinId = 1;
+        Rating expectedRating = new Rating();
+        expectedRating.setId(ratinId);
+
+        // retourne l'enchère simulée lorsque getbyid est appelé
+        when(ratingService.getbyid(ratinId)).thenReturn(Optional.of(expectedRating));
+
+        // Appelez la méthode showUpdateForm
+        String viewName = ratingController.showUpdateForm(ratinId, model);
+
+        // Vérifie que l'objet Rating a été ajouté au modèle avec le nom "rating"
+        verify(model).addAttribute("rating", expectedRating);
+
+        // Vérifie que le nom de la vue retournée est "rating/update"
+        assertEquals("rating/update", viewName);
     }
 }

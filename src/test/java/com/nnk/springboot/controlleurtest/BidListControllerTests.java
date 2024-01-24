@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
@@ -90,5 +91,43 @@ public class BidListControllerTests extends AbstractConfigurationTest {
 
         // Vérifier que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
         assertEquals("bidList/add", viewName);
+    }
+
+    @Test
+    public void testShowUpdateForm() {
+        Integer bidListId = 1;
+        BidList expectedBidList = new BidList();
+        expectedBidList.setBidListId(bidListId);
+
+        // retourne l'enchère simulée lorsque getById est appelé
+        when(bidListService.getbyid(bidListId)).thenReturn(Optional.of(expectedBidList));
+
+        // Appelez la méthode showUpdateForm
+        String viewName = bidListController.showUpdateForm(bidListId, model);
+
+        // Vérifie que l'objet BidList a été ajouté au modèle avec le nom "bidList"
+        verify(model).addAttribute("bidList", expectedBidList);
+
+        // Vérifie que le nom de la vue retournée est "bidList/update"
+        assertEquals("bidList/update", viewName);
+    }
+
+    @Test
+    public void testUpdateBidSuccess() {
+        Integer bidListId = 1;
+        BidList bidList = new BidList();
+        bidList.setBidListId(bidListId);
+
+        // Configure le service pour retourner true lorsqu'on vérifie la présence de l'enchère
+        when(bidListService.getbyid(bidListId)).thenReturn(Optional.of(bidList));
+
+        // Appele la méthode updateBid et un objet BidList valide
+        String viewName = bidListController.updateBid(bidListId, bidList, mock(BindingResult.class), model);
+
+        // Vérifie que l'enchère est enregistrée avec le service
+        verify(bidListService).saveBidList(bidList);
+
+        // Vérifie que le nom de la vue retournée est "redirect:/bidList/list"
+        assertEquals("redirect:/bidList/list", viewName);
     }
 }

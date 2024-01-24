@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
@@ -94,5 +95,24 @@ public class RuleNameControllerTests extends AbstractConfigurationTest {
 
         // Vérifier que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
         assertEquals("ruleName/add", viewName);
+    }
+
+    @Test
+    public void testShowUpdateForm() {
+        Integer ruleNameId = 1;
+        RuleName expectedRuleName = new RuleName();
+        expectedRuleName.setId(ruleNameId);
+
+        // retourne l'enchère simulée lorsque getbyid est appelé
+        when(ruleNameService.getById(ruleNameId)).thenReturn(Optional.of(expectedRuleName));
+
+        // Appelez la méthode showUpdateForm
+        String viewName = ruleNameController.showUpdateForm(ruleNameId, model);
+
+        // Vérifie que l'objet RuleName a été ajouté au modèle avec le nom "ruleName"
+        verify(model).addAttribute("ruleName", expectedRuleName);
+
+        // Vérifie que le nom de la vue retournée est "ruleName/update"
+        assertEquals("ruleName/update", viewName);
     }
 }

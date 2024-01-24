@@ -2,6 +2,7 @@ package com.nnk.springboot.controlleurtest;
 
 import com.nnk.springboot.AbstractConfigurationTest;
 import com.nnk.springboot.controllers.UserController;
+import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.service.UserService;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
@@ -92,5 +94,24 @@ public class UserControllerTests extends AbstractConfigurationTest {
 
         // Vérifier que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
         assertEquals("user/add", viewName);
+    }
+
+    @Test
+    public void testShowUpdateForm() {
+        Integer userId = 1;
+        User expectedUser = new User();
+        expectedUser.setId(userId);
+
+        // retourne l'enchère simulée lorsque getById est appelé
+        when(userService.getById(userId)).thenReturn(Optional.of(expectedUser));
+
+        // Appelez la méthode showUpdateForm
+        String viewName = userController.showUpdateForm(userId, model);
+
+        // Vérifie que l'objet User a été ajouté au modèle avec le nom "user"
+        verify(model).addAttribute("user", expectedUser);
+
+        // Vérifie que le nom de la vue retournée est "user/update"
+        assertEquals("user/update", viewName);
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
@@ -91,5 +92,24 @@ public class TradeControllerTests extends AbstractConfigurationTest {
 
         // Vérifier que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
         assertEquals("trade/add", viewName);
+    }
+
+    @Test
+    public void testShowUpdateForm() {
+        Integer tradeId = 1;
+        Trade expectedTrade = new Trade();
+        expectedTrade.setTradeId(tradeId);
+
+        // retourne l'enchère simulée lorsque getById est appelé
+        when(tradeService.getById(tradeId)).thenReturn(Optional.of(expectedTrade));
+
+        // Appelez la méthode showUpdateForm
+        String viewName = tradeController.showUpdateForm(tradeId, model);
+
+        // Vérifie que l'objet Trade a été ajouté au modèle avec le nom "trade"
+        verify(model).addAttribute("trade", expectedTrade);
+
+        // Vérifie que le nom de la vue retournée est "bidList/update"
+        assertEquals("trade/update", viewName);
     }
 }
