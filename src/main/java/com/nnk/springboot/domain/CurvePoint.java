@@ -1,6 +1,10 @@
 package com.nnk.springboot.domain;
 
 import jakarta.persistence.*;
+
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.sql.Timestamp;
 
 @Entity
@@ -16,8 +20,12 @@ public class CurvePoint {
     @Column
     private Timestamp asOfDate;
     @Column
+    @NotNull(message = "Term is mandatory")
+    @PositiveOrZero(message = "Term should be a decimal number and greater than zero")
     private Double term;
     @Column
+    @NotNull(message = "Value is mandatory")
+    @DecimalMin(value = "0", inclusive = false, message ="Value should be a decimal number and greater than zero")
     private Double value;
     @Column
     private Timestamp creationDate;

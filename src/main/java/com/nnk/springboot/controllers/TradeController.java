@@ -1,7 +1,6 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.Trade;
-import com.nnk.springboot.repositories.TradeRepository;
 import com.nnk.springboot.service.TradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,7 +28,7 @@ public class TradeController {
     }
 
     @GetMapping("/trade/add")
-    public String addUser(Model model) {
+    public String addTradeForm(Model model) {
         model.addAttribute("trade", new Trade());
         logger.info("GetMapping(\"/trade/add\") successfully");
         return "trade/add";

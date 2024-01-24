@@ -2,6 +2,9 @@ package com.nnk.springboot.domain;
 
 import jakarta.persistence.*;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 @Entity
 @Table(name = "rating")
 public class Rating {
@@ -10,12 +13,16 @@ public class Rating {
     @Column()
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
+    @Size(max=120, message = "The size of moodys Rating must be of maximum 120 characters")
     @Column()
     private String moodysRating;
+    @Size(max=120, message = "The size of sand PRating must be of maximum 120 characters")
     @Column()
     private String sandPRating;
+    @Size(max=120, message = "The size of fitch Rating must be of maximum 120 characters")
     @Column()
     private String fitchRating;
+    @NotNull(message= "Order Number is mandatory")
     @Column()
     private Integer orderNumber;
 

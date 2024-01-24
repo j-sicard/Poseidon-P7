@@ -1,6 +1,10 @@
 package com.nnk.springboot.domain;
 
 import jakarta.persistence.*;
+
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 @Entity
@@ -10,10 +14,17 @@ public class BidList {
     @Column()
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer BidListId;
+
+    @NotBlank(message = "Account is mandatory")
     @Column()
     private  String account;
+
+    @NotBlank(message = "Type is mandatory")
     @Column()
     private  String  type;
+
+    @NotNull(message = "Bid Quantity is mandatory")
+    @DecimalMin(value = "0", inclusive = false, message = "Bid Quantity must be positive")
     @Column()
     private  Double bidQuantity;
     @Column()

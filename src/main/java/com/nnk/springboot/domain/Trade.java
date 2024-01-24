@@ -2,6 +2,9 @@ package com.nnk.springboot.domain;
 
 import jakarta.persistence.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 
 @Entity
@@ -11,10 +14,15 @@ public class Trade {
     @Column()
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer tradeId;
-    @Column
+    @NotBlank(message = "Account is mandatory")
+    @Size(max=35, message = "The account name must be of maximum 35 characters")
+    @Column()
     private String account;
+    @NotBlank(message = "Type is mandatory")
+    @Size(max=35, message = "The type must be of maximum 35 characters")
     @Column()
     private String type;
+    @PositiveOrZero(message = "Buy Quantity must be greater than or equal to zero")
     @Column()
     private Double buyQuantity;
     @Column()
