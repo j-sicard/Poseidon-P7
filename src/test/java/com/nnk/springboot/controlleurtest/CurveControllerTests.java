@@ -110,4 +110,96 @@ public class CurveControllerTests extends AbstractConfigurationTest {
         // Vérifie que le nom de la vue retournée est "curvePoint/update"
         assertEquals("curvePoint/update", viewName);
     }
+
+    @Test
+    public void updateCurveSuccessTest() {
+        Integer curveId = 1;
+        CurvePoint curvePoint = new CurvePoint();
+        curvePoint.setCurveId(curveId);
+
+        // Configure le service pour retourner true lorsqu'on vérifie la présence de l'enchère
+        when(curvePointService.getCurvePoint(curveId)).thenReturn(Optional.of(curvePoint));
+
+        // Appele la méthode UpdateCurve et un objet CurvePoint valide
+        String viewName = curveController.updateCurve(curveId, curvePoint, mock(BindingResult.class), model);
+
+        // Vérifie que l'enchère est enregistrée avec le service
+        verify(curvePointService).saveCurvePoint(curvePoint);
+
+        // Vérifie que le nom de la vue retournée est "redirect:/curvePoint/list"
+        assertEquals("redirect:/curvePoint/list", viewName);
+    }
+
+    @Test
+    public void updateCurveInvalidIdTest() {
+        Integer curveId = 999;
+
+        // Configure le service pour retourner false lorsqu'on vérifie la présence de l'enchère
+        when(curvePointService.getCurvePoint(curveId)).thenReturn(Optional.empty());
+
+        // Appele la méthode updateCurve et un objet CurvePoint valide
+        String viewName = curveController.updateCurve(curveId, new CurvePoint(), mock(BindingResult.class), model);
+
+        // Vérifie que la méthode redirige vers "/curvePoint/list"
+        assertEquals("redirect:/curvePoint/list", viewName);
+
+        // Vérifie que la méthode n'essaie pas de sauvegarder l'enchère
+        verify(curvePointService, never()).saveCurvePoint(any(CurvePoint.class));
+    }
+
+    @Test
+    public void updateCurveValidationProblemTest() {
+        Integer curveId = 1;
+        CurvePoint curvePoint = new CurvePoint();
+        curvePoint.setCurveId(curveId);
+
+        // Configure le service pour retourner true lorsqu'on vérifie la présence de l'enchère
+        when(curvePointService.getCurvePoint(curveId)).thenReturn(Optional.of(curvePoint));
+
+        // Configure le BindingResult pour indiquer qu'il y a des erreurs de validation
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        // Appel la méthode updateCurve et un objet curvePoint avec des erreurs de validation
+        String viewName = curveController.updateCurve(curveId, curvePoint, bindingResult, model);
+
+        // Vérifie que la méthode renvoie la vue "/curvePoint/add"
+        assertEquals("/curvePoint/add", viewName);
+
+        // Vérifie que la méthode n'essaie pas de sauvegarder l'enchère
+        verify(curvePointService, never()).saveCurvePoint(any(CurvePoint.class));
+    }
+
+    @Test
+    public void testDeleteCurve() {
+        Integer curveId = 1;
+        CurvePoint curvePoint = new CurvePoint();
+        curvePoint.setId(curveId);
+
+        // Configure le service pour retourner l'enchère lorsqu'on vérifie la présence de l'enchère
+        when(curvePointService.getCurvePoint(curveId)).thenReturn(Optional.of(curvePoint));
+
+        // Appele la méthode deleteCurve
+        String viewName = curveController.deleteBid(curveId, model);
+
+        // Vérifie que l'enchère est supprimée avec le service
+        verify(curvePointService).deleteCurvePoint(curvePoint);
+
+        // Vérifie que le nom de la vue retournée est "redirect:/curvePoint/list"
+        assertEquals("redirect:/curvePoint/list", viewName);
+
+        // Vérifie que la liste des enchères est ajoutée au modèle
+        verify(model).addAttribute(eq("curvePoint"), anyList());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDeleteCurvePointInvalidId() {
+        Integer curvePointId = 999;
+
+        // Configure le service pour retourner false lorsqu'on vérifie la présence de l'enchère
+        when(curvePointService.getCurvePoint(curvePointId)).thenReturn(Optional.empty());
+
+        // Appele la méthode deleteBid avec l'ID factice
+        curveController.deleteBid(curvePointId, model);
+    }
 }

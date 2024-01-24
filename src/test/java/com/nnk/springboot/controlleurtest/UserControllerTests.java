@@ -2,6 +2,7 @@ package com.nnk.springboot.controlleurtest;
 
 import com.nnk.springboot.AbstractConfigurationTest;
 import com.nnk.springboot.controllers.UserController;
+import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.service.UserService;
@@ -114,4 +115,38 @@ public class UserControllerTests extends AbstractConfigurationTest {
         // Vérifie que le nom de la vue retournée est "user/update"
         assertEquals("user/update", viewName);
     }
+
+    @Test
+    public void deleteUserTest() {
+        Integer userId = 1;
+        User user = new User();
+        user.setId(userId);
+
+        // Configure le service pour retourner l'enchère lorsqu'on vérifie la présence de l'enchère
+        when(userService.getById(userId)).thenReturn(Optional.of(user));
+
+        // Appele la méthode deleteUser
+        String viewName = userController.deleteUser(userId, model);
+
+        // Vérifie que l'enchère est supprimée avec le service
+        verify(userService).deleteUser(user);
+
+        // Vérifie que le nom de la vue retournée est "redirect:/user/list"
+        assertEquals("redirect:/user/list", viewName);
+
+        // Vérifie que la liste des enchères est ajoutée au modèle
+        verify(model).addAttribute(eq("users"), anyList());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDeleteUserInvalidId() {
+        Integer userId = 999;
+
+        // Configure le service pour retourner false lorsqu'on vérifie la présence de l'enchère
+        when(userService.getById(userId)).thenReturn(Optional.empty());
+
+        // Appele la méthode deleteBid avec l'ID factice
+        userController.deleteUser(userId, model);
+    }
+
 }

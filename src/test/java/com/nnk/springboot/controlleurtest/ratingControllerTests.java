@@ -113,4 +113,96 @@ public class ratingControllerTests extends AbstractConfigurationTest {
         // Vérifie que le nom de la vue retournée est "rating/update"
         assertEquals("rating/update", viewName);
     }
+
+    @Test
+    public void updateRatingSuccessTest() {
+        Integer ratingId = 1;
+        Rating rating = new Rating();
+        rating.setId(ratingId);
+
+        // Configure le service pour retourner true lorsqu'on vérifie la présence de l'enchère
+        when(ratingService.getbyid(ratingId)).thenReturn(Optional.of(rating));
+
+        // Appele la méthode updateRating et un objet Rating valide
+        String viewName = ratingController.updateRating(ratingId, rating, mock(BindingResult.class), model);
+
+        // Vérifie que l'enchère est enregistrée avec le service
+        verify(ratingService).saveRating(rating);
+
+        // Vérifie que le nom de la vue retournée est "redirect:/rating/list"
+        assertEquals("redirect:/rating/list", viewName);
+    }
+
+    @Test
+    public void updateRatingInvalidIdTest() {
+        Integer ratingId = 999;
+
+        // Configure le service pour retourner false lorsqu'on vérifie la présence de l'enchère
+        when(ratingService.getbyid(ratingId)).thenReturn(Optional.empty());
+
+        // Appele la méthode updateRating et un objet Rating valide
+        String viewName = ratingController.updateRating(ratingId, new Rating(), mock(BindingResult.class), model);
+
+        // Vérifie que la méthode redirige vers "/rating/list"
+        assertEquals("redirect:/rating/list", viewName);
+
+        // Vérifie que la méthode n'essaie pas de sauvegarder l'enchère
+        verify(ratingService, never()).saveRating(any(Rating.class));
+    }
+
+    @Test
+    public void updateRatingValidationProblemTest() {
+        Integer ratingId = 1;
+        Rating rating = new Rating();
+        rating.setId(ratingId);
+
+        // Configure le service pour retourner true lorsqu'on vérifie la présence de l'enchère
+        when(ratingService.getbyid(ratingId)).thenReturn(Optional.of(rating));
+
+        // Configure le BindingResult pour indiquer qu'il y a des erreurs de validation
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        // Appel la méthode updateRating et un objet Rating avec des erreurs de validation
+        String viewName = ratingController.updateRating(ratingId, rating, bindingResult, model);
+
+        // Vérifie que la méthode renvoie la vue "/rating/add"
+        assertEquals("/rating/add", viewName);
+
+        // Vérifie que la méthode n'essaie pas de sauvegarder l'enchère
+        verify(ratingService, never()).saveRating(any(Rating.class));
+    }
+
+    @Test
+    public void testDeleteRating() {
+        Integer ratingId = 1;
+        Rating rating = new Rating();
+        rating.setId(ratingId);
+
+        // Configure le service pour retourner l'enchère lorsqu'on vérifie la présence de l'enchère
+        when(ratingService.getbyid(ratingId)).thenReturn(Optional.of(rating));
+
+        // Appele la méthode deleteRating
+        String viewName = ratingController.deleteRating(ratingId, model);
+
+        // Vérifie que l'enchère est supprimée avec le service
+        verify(ratingService).deleteRating(rating);
+
+        // Vérifie que le nom de la vue retournée est "redirect:/rating/list"
+        assertEquals("redirect:/rating/list", viewName);
+
+        // Vérifie que la liste des enchères est ajoutée au modèle
+        verify(model).addAttribute(eq("rating"), anyList());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDeleteRatingInvalidId() {
+        Integer ratingId = 999;
+
+        // Configure le service pour retourner false lorsqu'on vérifie la présence de l'enchère
+        when(ratingService.getbyid(ratingId)).thenReturn(Optional.empty());
+
+        // Appele la méthode deleteBid avec l'ID factice
+        ratingController.deleteRating(ratingId, model);
+    }
 }

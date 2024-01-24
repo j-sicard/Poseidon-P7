@@ -57,8 +57,8 @@ public class CurveController {
     }
 
     @PostMapping("/curvePoint/update/{id}")
-    public String updateBid(@PathVariable("id") Integer id, @Valid CurvePoint curvePoint,
-                             BindingResult result, Model model) {
+    public String updateCurve(@PathVariable("id") Integer id, @Valid CurvePoint curvePoint,
+                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Curve and return Curve list
         if (!curvePointService.getCurvePoint(id).isPresent()){
             logger.info("Invalid id:" + id);
@@ -67,9 +67,10 @@ public class CurveController {
         if (!result.hasErrors()){
             curvePointService.saveCurvePoint(curvePoint);
             logger.info("update successful");
+            return "redirect:/curvePoint/list";
         }
         logger.info("validation problem occurred ( /bidList/curvePoint/{id} )");
-        return "redirect:/curvePoint/list";
+        return "/curvePoint/add";
     }
 
     @GetMapping("/curvePoint/delete/{id}")

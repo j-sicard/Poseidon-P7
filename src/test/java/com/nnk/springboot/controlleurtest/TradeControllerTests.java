@@ -3,7 +3,6 @@ package com.nnk.springboot.controlleurtest;
 import com.nnk.springboot.AbstractConfigurationTest;
 import com.nnk.springboot.controllers.TradeController;
 import com.nnk.springboot.domain.BidList;
-import com.nnk.springboot.domain.RuleName;
 import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.service.TradeService;
 import org.junit.Test;
@@ -111,5 +110,97 @@ public class TradeControllerTests extends AbstractConfigurationTest {
 
         // Vérifie que le nom de la vue retournée est "bidList/update"
         assertEquals("trade/update", viewName);
+    }
+
+    @Test
+    public void updateTradeSuccessTest() {
+        Integer tradeId = 1;
+        Trade trade = new Trade();
+        trade.setTradeId(tradeId);
+
+        // Configure le service pour retourner true lorsqu'on vérifie la présence de l'enchère
+        when(tradeService.getById(tradeId)).thenReturn(Optional.of(trade));
+
+        // Appele la méthode updateTrade et un objet Trade valide
+        String viewName = tradeController.updateTrade(tradeId, trade, mock(BindingResult.class), model);
+
+        // Vérifie que l'enchère est enregistrée avec le service
+        verify(tradeService).saveTrade(trade);
+
+        // Vérifie que le nom de la vue retournée est "redirect:/trade/list"
+        assertEquals("redirect:/trade/list", viewName);
+    }
+
+    @Test
+    public void updateTradeInvalidIdTest() {
+        Integer tradeId = 999;
+
+        // Configure le service pour retourner false lorsqu'on vérifie la présence de l'enchère
+        when(tradeService.getById(tradeId)).thenReturn(Optional.empty());
+
+        // Appele la méthode updateTrade et un objet Trade valide
+        String viewName = tradeController.updateTrade(tradeId, new Trade(), mock(BindingResult.class), model);
+
+        // Vérifie que la méthode redirige vers "/trade/list"
+        assertEquals("redirect:/trade/list", viewName);
+
+        // Vérifie que la méthode n'essaie pas de sauvegarder l'enchère
+        verify(tradeService, never()).saveTrade(any(Trade.class));
+    }
+
+    @Test
+    public void updateTradeValidationProblemTest() {
+        Integer tradeId = 1;
+        Trade trade = new Trade();
+        trade.setTradeId(tradeId);
+
+        // Configure le service pour retourner true lorsqu'on vérifie la présence de l'enchère
+        when(tradeService.getById(tradeId)).thenReturn(Optional.of(trade));
+
+        // Configure le BindingResult pour indiquer qu'il y a des erreurs de validation
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        // Appel la méthode updateTrade et un objet Trade avec des erreurs de validation
+        String viewName = tradeController.updateTrade(tradeId, trade, bindingResult, model);
+
+        // Vérifie que la méthode renvoie la vue "/trade/add"
+        assertEquals("/trade/add", viewName);
+
+        // Vérifie que la méthode n'essaie pas de sauvegarder l'enchère
+        verify(tradeService, never()).saveTrade(any(Trade.class));
+    }
+
+    @Test
+    public void deleteTradeTest() {
+        Integer tradeId = 1;
+        Trade trade = new Trade();
+        trade.setTradeId(tradeId);
+
+        // Configure le service pour retourner l'enchère lorsqu'on vérifie la présence de l'enchère
+        when(tradeService.getById(tradeId)).thenReturn(Optional.of(trade));
+
+        // Appele la méthode deleteTrade
+        String viewName = tradeController.deleteTrade(tradeId, model);
+
+        // Vérifie que l'enchère est supprimée avec le service
+        verify(tradeService).deleteTrade(trade);
+
+        // Vérifie que le nom de la vue retournée est "redirect:/trade/list"
+        assertEquals("redirect:/trade/list", viewName);
+
+        // Vérifie que la liste des enchères est ajoutée au modèle
+        verify(model).addAttribute(eq("trade"), anyList());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDeleteTradeInvalidId() {
+        Integer tradeId = 999;
+
+        // Configure le service pour retourner false lorsqu'on vérifie la présence de l'enchère
+        when(tradeService.getById(tradeId)).thenReturn(Optional.empty());
+
+        // Appele la méthode deleteBid avec l'ID factice
+        tradeController.deleteTrade(tradeId, model);
     }
 }

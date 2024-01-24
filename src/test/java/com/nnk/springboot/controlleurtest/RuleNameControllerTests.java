@@ -3,6 +3,7 @@ package com.nnk.springboot.controlleurtest;
 import com.nnk.springboot.AbstractConfigurationTest;
 import com.nnk.springboot.controllers.RuleNameController;
 import com.nnk.springboot.domain.BidList;
+import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.domain.RuleName;;
 import com.nnk.springboot.service.RuleNameService;
@@ -98,7 +99,7 @@ public class RuleNameControllerTests extends AbstractConfigurationTest {
     }
 
     @Test
-    public void testShowUpdateForm() {
+    public void showUpdateFormtest() {
         Integer ruleNameId = 1;
         RuleName expectedRuleName = new RuleName();
         expectedRuleName.setId(ruleNameId);
@@ -114,5 +115,97 @@ public class RuleNameControllerTests extends AbstractConfigurationTest {
 
         // Vérifie que le nom de la vue retournée est "ruleName/update"
         assertEquals("ruleName/update", viewName);
+    }
+
+    @Test
+    public void updateRuleNameSuccessTest() {
+        Integer ruleNameId = 1;
+        RuleName ruleName = new RuleName();
+        ruleName.setId(ruleNameId);
+
+        // Configure le service pour retourner true lorsqu'on vérifie la présence de l'enchère
+        when(ruleNameService.getById(ruleNameId)).thenReturn(Optional.of(ruleName));
+
+        // Appele la méthode updateRuleName et un objet RuleName valide
+        String viewName = ruleNameController.updateRuleName(ruleNameId, ruleName, mock(BindingResult.class), model);
+
+        // Vérifie que l'enchère est enregistrée avec le service
+        verify(ruleNameService).saveRuleName(ruleName);
+
+        // Vérifie que le nom de la vue retournée est "redirect:/ruleName/list"
+        assertEquals("redirect:/ruleName/list", viewName);
+    }
+
+    @Test
+    public void updateRuleNameInvalidIdTest() {
+        Integer ruleNameId = 999;
+
+        // Configure le service pour retourner false lorsqu'on vérifie la présence de l'enchère
+        when(ruleNameService.getById(ruleNameId)).thenReturn(Optional.empty());
+
+        // Appele la méthode updateRuleName et un objet RuleName valide
+        String viewName = ruleNameController.updateRuleName(ruleNameId, new RuleName(), mock(BindingResult.class), model);
+
+        // Vérifie que la méthode redirige vers "/ruleName/list"
+        assertEquals("redirect:/ruleName/list", viewName);
+
+        // Vérifie que la méthode n'essaie pas de sauvegarder l'enchère
+        verify(ruleNameService, never()).saveRuleName(any(RuleName.class));
+    }
+
+    @Test
+    public void updateRuleNameValidationProblemTest() {
+        Integer ruleNameId = 1;
+        RuleName ruleName = new RuleName();
+        ruleName.setId(ruleNameId);
+
+        // Configure le service pour retourner true lorsqu'on vérifie la présence de l'enchère
+        when(ruleNameService.getById(ruleNameId)).thenReturn(Optional.of(ruleName));
+
+        // Configure le BindingResult pour indiquer qu'il y a des erreurs de validation
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        // Appel la méthode updateRuleName et un objet RuleName avec des erreurs de validation
+        String viewName = ruleNameController.updateRuleName(ruleNameId, ruleName, bindingResult, model);
+
+        // Vérifie que la méthode renvoie la vue "/ruleName/add"
+        assertEquals("ruleName/add", viewName);
+
+        // Vérifie que la méthode n'essaie pas de sauvegarder l'enchère
+        verify(ruleNameService, never()).saveRuleName(any(RuleName.class));
+    }
+
+    @Test
+    public void deleteRuleNameTest() {
+        Integer ruleNameId = 1;
+        RuleName ruleName = new RuleName();
+        ruleName.setId(ruleNameId);
+
+        // Configure le service pour retourner l'enchère lorsqu'on vérifie la présence de l'enchère
+        when(ruleNameService.getById(ruleNameId)).thenReturn(Optional.of(ruleName));
+
+        // Appele la méthode deleteBid
+        String viewName = ruleNameController.deleteRuleName(ruleNameId, model);
+
+        // Vérifie que l'enchère est supprimée avec le service
+        verify(ruleNameService).deleteRuleName(ruleName);
+
+        // Vérifie que le nom de la vue retournée est "redirect:/ruleName/list"
+        assertEquals("redirect:/ruleName/list", viewName);
+
+        // Vérifie que la liste des enchères est ajoutée au modèle
+        verify(model).addAttribute(eq("ruleName"), anyList());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDeleteCurveInvalidId() {
+        Integer ruleNameId = 999;
+
+        // Configure le service pour retourner false lorsqu'on vérifie la présence de l'enchère
+        when(ruleNameService.getById(ruleNameId)).thenReturn(Optional.empty());
+
+        // Appele la méthode deleteBid avec l'ID factice
+        ruleNameController.deleteRuleName(ruleNameId, model);
     }
 }
