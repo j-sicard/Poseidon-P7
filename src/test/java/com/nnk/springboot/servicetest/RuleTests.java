@@ -1,7 +1,7 @@
 package com.nnk.springboot.servicetest;
 
 import com.nnk.springboot.AbstractConfigurationTest;
-import com.nnk.springboot.domain.RuleName;
+import com.nnk.springboot.model.RuleNameModel;
 import com.nnk.springboot.repositories.RuleNameRepository;
 import com.nnk.springboot.service.RuleNameService;
 import org.junit.Assert;
@@ -22,7 +22,7 @@ public class RuleTests extends AbstractConfigurationTest {
 
 	@Test
 	public void ruleTest() {
-		RuleName rule = new RuleName();
+		RuleNameModel rule = new RuleNameModel();
 		rule.setName("Rule Name");
 		rule.setDescription("Description");
 		rule.setJson("Json");
@@ -41,7 +41,7 @@ public class RuleTests extends AbstractConfigurationTest {
 		Assert.assertTrue(rule.getName().equals("Rule Name Update"));
 
 		// Find
-		List<RuleName> listResult = ruleNameService.getAllRuleNames();
+		List<RuleNameModel> listResult = ruleNameService.getAllRuleNames();
 		Assert.assertTrue(listResult.size() > 0);
 
 		// FindById
@@ -50,7 +50,7 @@ public class RuleTests extends AbstractConfigurationTest {
 		// Delete
 		Integer id = rule.getId();
 		ruleNameService.deleteRuleName(rule);
-		Optional<RuleName> ruleList = ruleNameRepository.findById(id);
+		Optional<RuleNameModel> ruleList = ruleNameRepository.findById(id);
 		Assert.assertFalse(ruleList.isPresent());
 	}
 }

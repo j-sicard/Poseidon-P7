@@ -2,10 +2,7 @@ package com.nnk.springboot.controlleurtest;
 
 import com.nnk.springboot.AbstractConfigurationTest;
 import com.nnk.springboot.controllers.RuleNameController;
-import com.nnk.springboot.domain.BidList;
-import com.nnk.springboot.domain.CurvePoint;
-import com.nnk.springboot.domain.Rating;
-import com.nnk.springboot.domain.RuleName;;
+import com.nnk.springboot.model.RuleNameModel;;
 import com.nnk.springboot.service.RuleNameService;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -35,7 +32,7 @@ public class RuleNameControllerTests extends AbstractConfigurationTest {
 
     @Test
     public void homeTest() {
-        RuleName ruleName = new RuleName();
+        RuleNameModel ruleName = new RuleNameModel();
         ruleName.setName("nameTest");
         ruleName.setDescription("DescritpionTest");
         ruleName.setJson("JsonTest");
@@ -43,7 +40,7 @@ public class RuleNameControllerTests extends AbstractConfigurationTest {
         ruleName.setSqlStr("SqlStrTest");
         ruleName.setSqlPart("SqlPartTest");
 
-        List<RuleName> ruleNames = new ArrayList<>();
+        List<RuleNameModel> ruleNames = new ArrayList<>();
         ruleNames.add(ruleName);
 
         when(ruleNameService.getAllRuleNames()).thenReturn(ruleNames);
@@ -59,13 +56,13 @@ public class RuleNameControllerTests extends AbstractConfigurationTest {
 
         assertEquals("ruleName/add", viewName);
 
-        verify(model).addAttribute(eq("ruleName"), Mockito.any(RuleName.class));
+        verify(model).addAttribute(eq("ruleName"), Mockito.any(RuleNameModel.class));
     }
 
     @Test
     public void validateRuleNameWithNoErrorsTest() {
         // Objet RuleName valide
-        RuleName ruleName = new RuleName();
+        RuleNameModel ruleName = new RuleNameModel();
         ruleName.setName("NameTest");
 
         // Simuler un BindingResult sans erreurs
@@ -83,7 +80,7 @@ public class RuleNameControllerTests extends AbstractConfigurationTest {
     @Test
     public void validateRuleNameWithErrorsTest() {
         // Objet RuleName invalide
-        RuleName ruleName = new RuleName();
+        RuleNameModel ruleName = new RuleNameModel();
         ruleName.setName("10");
 
         // Simuler un BindingResult avec des erreurs
@@ -101,7 +98,7 @@ public class RuleNameControllerTests extends AbstractConfigurationTest {
     @Test
     public void showUpdateFormtest() {
         Integer ruleNameId = 1;
-        RuleName expectedRuleName = new RuleName();
+        RuleNameModel expectedRuleName = new RuleNameModel();
         expectedRuleName.setId(ruleNameId);
 
         // retourne l'enchère simulée lorsque getbyid est appelé
@@ -120,7 +117,7 @@ public class RuleNameControllerTests extends AbstractConfigurationTest {
     @Test
     public void updateRuleNameSuccessTest() {
         Integer ruleNameId = 1;
-        RuleName ruleName = new RuleName();
+        RuleNameModel ruleName = new RuleNameModel();
         ruleName.setId(ruleNameId);
 
         // Configure le service pour retourner true lorsqu'on vérifie la présence de l'enchère
@@ -144,19 +141,19 @@ public class RuleNameControllerTests extends AbstractConfigurationTest {
         when(ruleNameService.getById(ruleNameId)).thenReturn(Optional.empty());
 
         // Appele la méthode updateRuleName et un objet RuleName valide
-        String viewName = ruleNameController.updateRuleName(ruleNameId, new RuleName(), mock(BindingResult.class), model);
+        String viewName = ruleNameController.updateRuleName(ruleNameId, new RuleNameModel(), mock(BindingResult.class), model);
 
         // Vérifie que la méthode redirige vers "/ruleName/list"
         assertEquals("redirect:/ruleName/list", viewName);
 
         // Vérifie que la méthode n'essaie pas de sauvegarder l'enchère
-        verify(ruleNameService, never()).saveRuleName(any(RuleName.class));
+        verify(ruleNameService, never()).saveRuleName(any(RuleNameModel.class));
     }
 
     @Test
     public void updateRuleNameValidationProblemTest() {
         Integer ruleNameId = 1;
-        RuleName ruleName = new RuleName();
+        RuleNameModel ruleName = new RuleNameModel();
         ruleName.setId(ruleNameId);
 
         // Configure le service pour retourner true lorsqu'on vérifie la présence de l'enchère
@@ -173,13 +170,13 @@ public class RuleNameControllerTests extends AbstractConfigurationTest {
         assertEquals("ruleName/add", viewName);
 
         // Vérifie que la méthode n'essaie pas de sauvegarder l'enchère
-        verify(ruleNameService, never()).saveRuleName(any(RuleName.class));
+        verify(ruleNameService, never()).saveRuleName(any(RuleNameModel.class));
     }
 
     @Test
     public void deleteRuleNameTest() {
         Integer ruleNameId = 1;
-        RuleName ruleName = new RuleName();
+        RuleNameModel ruleName = new RuleNameModel();
         ruleName.setId(ruleNameId);
 
         // Configure le service pour retourner l'enchère lorsqu'on vérifie la présence de l'enchère

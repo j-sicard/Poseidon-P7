@@ -1,17 +1,17 @@
 package com.nnk.springboot.service;
 
-import com.nnk.springboot.domain.Rating;
+import com.nnk.springboot.model.RatingModel;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface RatingService {
-    public List<Rating> getAllRatings();
+    public List<RatingModel> getAllRatings();
 
-    public void saveRating(Rating rating);
+    public void saveRating(RatingModel rating);
 
-    public void deleteRating(Rating rating);
+    public void deleteRating(RatingModel rating);
 
-    public Optional<Rating> getbyid(Integer id);
+    public Optional<RatingModel> getbyid(Integer id);
 
 }

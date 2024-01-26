@@ -2,8 +2,7 @@ package com.nnk.springboot.controlleurtest;
 
 import com.nnk.springboot.AbstractConfigurationTest;
 import com.nnk.springboot.controllers.CurveController;
-import com.nnk.springboot.domain.BidList;
-import com.nnk.springboot.domain.CurvePoint;
+import com.nnk.springboot.model.CurvePointModel;
 import com.nnk.springboot.service.CurvePointService;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -33,11 +32,11 @@ public class CurveControllerTests extends AbstractConfigurationTest {
 
     @Test
     public void homeTest() {
-        CurvePoint curvePoint = new CurvePoint();
+        CurvePointModel curvePoint = new CurvePointModel();
         curvePoint.setTerm(10.0);
         curvePoint.setValue(10.0);
 
-        List<CurvePoint> curvePoints = new ArrayList<>();
+        List<CurvePointModel> curvePoints = new ArrayList<>();
         curvePoints.add(curvePoint);
 
         when(curvePointService.getAllCurvePoints()).thenReturn(curvePoints);
@@ -53,13 +52,13 @@ public class CurveControllerTests extends AbstractConfigurationTest {
 
         assertEquals("curvePoint/add", viewName);
 
-        verify(model).addAttribute(eq("curvePoint"), Mockito.any(CurvePoint.class));
+        verify(model).addAttribute(eq("curvePoint"), Mockito.any(CurvePointModel.class));
     }
 
     @Test
     public void validateCurveWithNoErrorsTest() {
         // Objet CurvePoint valide
-        CurvePoint curvePoint = new CurvePoint();
+        CurvePointModel curvePoint = new CurvePointModel();
         curvePoint.setValue(10.0);
 
         // Simuler un BindingResult sans erreurs
@@ -77,7 +76,7 @@ public class CurveControllerTests extends AbstractConfigurationTest {
     @Test
     public void validateCurveWithErrorsTest() {
         // Objet curvePoint invalide
-        CurvePoint curvePoint = new CurvePoint();
+        CurvePointModel curvePoint = new CurvePointModel();
         curvePoint.setValue(-5.0);
 
         // Simuler un BindingResult avec des erreurs
@@ -95,7 +94,7 @@ public class CurveControllerTests extends AbstractConfigurationTest {
     @Test
     public void testShowUpdateForm() {
         Integer curveId = 1;
-        CurvePoint expectedCurvePoint = new CurvePoint();
+        CurvePointModel expectedCurvePoint = new CurvePointModel();
         expectedCurvePoint.setCurveId(curveId);
 
         // retourne l'enchère simulée lorsque getCurvePoint est appelé
@@ -114,7 +113,7 @@ public class CurveControllerTests extends AbstractConfigurationTest {
     @Test
     public void updateCurveSuccessTest() {
         Integer curveId = 1;
-        CurvePoint curvePoint = new CurvePoint();
+        CurvePointModel curvePoint = new CurvePointModel();
         curvePoint.setCurveId(curveId);
 
         // Configure le service pour retourner true lorsqu'on vérifie la présence de l'enchère
@@ -138,19 +137,19 @@ public class CurveControllerTests extends AbstractConfigurationTest {
         when(curvePointService.getCurvePoint(curveId)).thenReturn(Optional.empty());
 
         // Appele la méthode updateCurve et un objet CurvePoint valide
-        String viewName = curveController.updateCurve(curveId, new CurvePoint(), mock(BindingResult.class), model);
+        String viewName = curveController.updateCurve(curveId, new CurvePointModel(), mock(BindingResult.class), model);
 
         // Vérifie que la méthode redirige vers "/curvePoint/list"
         assertEquals("redirect:/curvePoint/list", viewName);
 
         // Vérifie que la méthode n'essaie pas de sauvegarder l'enchère
-        verify(curvePointService, never()).saveCurvePoint(any(CurvePoint.class));
+        verify(curvePointService, never()).saveCurvePoint(any(CurvePointModel.class));
     }
 
     @Test
     public void updateCurveValidationProblemTest() {
         Integer curveId = 1;
-        CurvePoint curvePoint = new CurvePoint();
+        CurvePointModel curvePoint = new CurvePointModel();
         curvePoint.setCurveId(curveId);
 
         // Configure le service pour retourner true lorsqu'on vérifie la présence de l'enchère
@@ -167,13 +166,13 @@ public class CurveControllerTests extends AbstractConfigurationTest {
         assertEquals("/curvePoint/add", viewName);
 
         // Vérifie que la méthode n'essaie pas de sauvegarder l'enchère
-        verify(curvePointService, never()).saveCurvePoint(any(CurvePoint.class));
+        verify(curvePointService, never()).saveCurvePoint(any(CurvePointModel.class));
     }
 
     @Test
     public void testDeleteCurve() {
         Integer curveId = 1;
-        CurvePoint curvePoint = new CurvePoint();
+        CurvePointModel curvePoint = new CurvePointModel();
         curvePoint.setId(curveId);
 
         // Configure le service pour retourner l'enchère lorsqu'on vérifie la présence de l'enchère

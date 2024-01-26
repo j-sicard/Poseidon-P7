@@ -1,6 +1,6 @@
 package com.nnk.springboot.service.impl;
 
-import com.nnk.springboot.domain.User;
+import com.nnk.springboot.model.UserModel;
 import com.nnk.springboot.repositories.UserRepository;
 import com.nnk.springboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,19 +15,19 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
 
-    public List<User> getUsers(){
+    public List<UserModel> getUsers(){
         return userRepository.findAll();
     }
 
-    public Optional<User> getById(Integer id){
+    public Optional<UserModel> getById(Integer id){
         return userRepository.findById(id);
     }
 
-    public void deleteUser(User user){
+    public void deleteUser(UserModel user){
         userRepository.delete(user);
     }
 
-    public void saveUser(User user){
+    public void saveUser(UserModel user){
         userRepository.save(user);
     }
 }

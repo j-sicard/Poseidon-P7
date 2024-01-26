@@ -1,7 +1,7 @@
 package com.nnk.springboot.servicetest;
 
 import com.nnk.springboot.AbstractConfigurationTest;
-import com.nnk.springboot.domain.Rating;
+import com.nnk.springboot.model.RatingModel;
 import com.nnk.springboot.repositories.RatingRepository;
 import com.nnk.springboot.service.RatingService;
 import org.junit.Assert;
@@ -27,7 +27,7 @@ public class RatingTests extends AbstractConfigurationTest {
 
 	@Test
 	public void ratingTest() {
-		Rating rating = new Rating();
+		RatingModel rating = new RatingModel();
 		rating.setMoodysRating("Moodys Rating");
 		rating.setSandPRating("Sand PRating");
 		rating.setFitchRating("Fitch Rating");
@@ -44,7 +44,7 @@ public class RatingTests extends AbstractConfigurationTest {
 		Assert.assertTrue(rating.getOrderNumber() == 20);
 
 		// Find
-		List<Rating> listResult = ratingService.getAllRatings();
+		List<RatingModel> listResult = ratingService.getAllRatings();
 		Assert.assertTrue(listResult.size() > 0);
 
 		// FindById
@@ -53,7 +53,7 @@ public class RatingTests extends AbstractConfigurationTest {
 		// Delete
 		Integer id = rating.getId();
 		ratingService.deleteRating(rating);
-		Optional<Rating> ratingList = ratingRepository.findById(id);
+		Optional<RatingModel> ratingList = ratingRepository.findById(id);
 		Assert.assertFalse(ratingList.isPresent());
 	}
 }

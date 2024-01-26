@@ -2,9 +2,7 @@ package com.nnk.springboot.controlleurtest;
 
 import com.nnk.springboot.AbstractConfigurationTest;
 import com.nnk.springboot.controllers.UserController;
-import com.nnk.springboot.domain.CurvePoint;
-import com.nnk.springboot.domain.Trade;
-import com.nnk.springboot.domain.User;
+import com.nnk.springboot.model.UserModel;
 import com.nnk.springboot.service.UserService;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -34,13 +32,13 @@ public class UserControllerTests extends AbstractConfigurationTest {
 
     @Test
     public void homeTest() {
-        User user = new User();
+        UserModel user = new UserModel();
         user.setUsername("UserNameTest");
         user.setPassword("PasswordTest");
         user.setFullname("FullNameTest");
         user.setRole("RoleTest");
 
-        List<User> users = new ArrayList<>();
+        List<UserModel> users = new ArrayList<>();
         users.add(user);
 
         when(userService.getUsers()).thenReturn(users);
@@ -56,13 +54,13 @@ public class UserControllerTests extends AbstractConfigurationTest {
 
         assertEquals("user/add", viewName);
 
-        verify(model).addAttribute(eq("user"), Mockito.any(User.class));
+        verify(model).addAttribute(eq("user"), Mockito.any(UserModel.class));
     }
 
     @Test
     public void validateBidListWithNoErrorsTest() {
         // Objet User valide
-        User user = new User();
+        UserModel user = new UserModel();
         user.setRole("USER");
         user.setPassword("unMotDePasseValide");
 
@@ -82,7 +80,7 @@ public class UserControllerTests extends AbstractConfigurationTest {
     @Test
     public void validateBidListWithErrorsTest() {
         // Objet BidList invalide
-        User user = new User();
+        UserModel user = new UserModel();
         user.setRole("visiteur");
 
         // Simuler un BindingResult avec des erreurs
@@ -100,7 +98,7 @@ public class UserControllerTests extends AbstractConfigurationTest {
     @Test
     public void testShowUpdateForm() {
         Integer userId = 1;
-        User expectedUser = new User();
+        UserModel expectedUser = new UserModel();
         expectedUser.setId(userId);
 
         // retourne l'enchère simulée lorsque getById est appelé
@@ -119,7 +117,7 @@ public class UserControllerTests extends AbstractConfigurationTest {
     @Test
     public void deleteUserTest() {
         Integer userId = 1;
-        User user = new User();
+        UserModel user = new UserModel();
         user.setId(userId);
 
         // Configure le service pour retourner l'enchère lorsqu'on vérifie la présence de l'enchère

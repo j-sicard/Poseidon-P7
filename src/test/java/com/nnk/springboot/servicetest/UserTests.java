@@ -1,7 +1,7 @@
 package com.nnk.springboot.servicetest;
 
 import com.nnk.springboot.AbstractConfigurationTest;
-import com.nnk.springboot.domain.User;
+import com.nnk.springboot.model.UserModel;
 import com.nnk.springboot.repositories.UserRepository;
 import com.nnk.springboot.service.UserService;
 import org.junit.Assert;
@@ -21,7 +21,7 @@ public class UserTests extends AbstractConfigurationTest {
 
     @Test
     public void userTest(){
-        User user = new User();
+        UserModel user = new UserModel();
         user.setUsername("UserName");
         user.setFullname("UserFullName");
 
@@ -36,7 +36,7 @@ public class UserTests extends AbstractConfigurationTest {
         Assert.assertEquals(user.getFullname(), "UserFullNameUpdate");
 
         // Find
-        List<User> listResult = userService.getUsers();
+        List<UserModel> listResult = userService.getUsers();
         System.out.println("list size" + listResult.size());
         Assert.assertTrue(listResult.size() > 0);
 
@@ -44,7 +44,7 @@ public class UserTests extends AbstractConfigurationTest {
         // Delete
         Integer id = user.getId();
         userService.deleteUser(user);
-        Optional<User> userList = userService.getById(id);
+        Optional<UserModel> userList = userService.getById(id);
         Assert.assertFalse(userList.isPresent());
 
 

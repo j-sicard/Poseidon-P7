@@ -1,6 +1,6 @@
 package com.nnk.springboot.service.impl;
 
-import com.nnk.springboot.domain.RuleName;
+import com.nnk.springboot.model.RuleNameModel;
 import com.nnk.springboot.repositories.RuleNameRepository;
 import com.nnk.springboot.service.RuleNameService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +14,19 @@ public class RuleNameServiceImpl implements RuleNameService {
     @Autowired
     RuleNameRepository ruleNameRepository;
 
-    public List<RuleName> getAllRuleNames(){
+    public List<RuleNameModel> getAllRuleNames(){
         return ruleNameRepository.findAll();
     }
 
-    public void  saveRuleName(RuleName ruleName){
+    public void  saveRuleName(RuleNameModel ruleName){
         ruleNameRepository.save(ruleName);
     }
 
-    public void  deleteRuleName(RuleName ruleName){
+    public void  deleteRuleName(RuleNameModel ruleName){
         ruleNameRepository.delete(ruleName);
     }
 
-    public Optional<RuleName>getById(Integer id){
+    public Optional<RuleNameModel>getById(Integer id){
         return ruleNameRepository.findById(id);
     }
 

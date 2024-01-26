@@ -1,7 +1,7 @@
 package com.nnk.springboot.servicetest;
 
 import com.nnk.springboot.AbstractConfigurationTest;
-import com.nnk.springboot.domain.Trade;
+import com.nnk.springboot.model.TradeModel;
 import com.nnk.springboot.repositories.TradeRepository;
 import com.nnk.springboot.service.TradeService;
 import org.junit.Assert;
@@ -22,7 +22,7 @@ public class TradeTests extends AbstractConfigurationTest {
 
 	@Test
 	public void tradeTest() {
-		Trade trade = new Trade();
+		TradeModel trade = new TradeModel();
 		trade.setAccount("Trade Account");
 		trade.setType("Type");
 
@@ -37,7 +37,7 @@ public class TradeTests extends AbstractConfigurationTest {
 		Assert.assertTrue(trade.getAccount().equals("Trade Account Update"));
 
 		// Find
-		List<Trade> listResult = tradeService.getAllTrades();
+		List<TradeModel> listResult = tradeService.getAllTrades();
 		Assert.assertTrue(listResult.size() > 0);
 
 		//FindById
@@ -46,7 +46,7 @@ public class TradeTests extends AbstractConfigurationTest {
 		// Delete
 		Integer id = trade.getTradeId();
 		tradeService.deleteTrade(trade);
-		Optional<Trade> tradeList = tradeRepository.findById(id);
+		Optional<TradeModel> tradeList = tradeRepository.findById(id);
 		Assert.assertFalse(tradeList.isPresent());
 	}
 }

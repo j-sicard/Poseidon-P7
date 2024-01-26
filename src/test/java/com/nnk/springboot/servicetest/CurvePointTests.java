@@ -1,7 +1,7 @@
 package com.nnk.springboot.servicetest;
 
 import com.nnk.springboot.AbstractConfigurationTest;
-import com.nnk.springboot.domain.CurvePoint;
+import com.nnk.springboot.model.CurvePointModel;
 import com.nnk.springboot.repositories.CurvePointRepository;
 import com.nnk.springboot.service.CurvePointService;
 import org.junit.Assert;
@@ -22,7 +22,7 @@ public class CurvePointTests extends AbstractConfigurationTest {
 
 	@Test
 	public void curvePointTest() {
-		CurvePoint curvePoint = new CurvePoint();
+		CurvePointModel curvePoint = new CurvePointModel();
 		curvePoint.setCurveId(10);
 		curvePoint.setTerm(10.0);
 		curvePoint.setValue(30.0);
@@ -38,7 +38,7 @@ public class CurvePointTests extends AbstractConfigurationTest {
 		Assert.assertTrue(curvePoint.getCurveId() == 20);
 
 		// Find
-		List<CurvePoint> listResult = curvePointService.getAllCurvePoints();
+		List<CurvePointModel> listResult = curvePointService.getAllCurvePoints();
 		Assert.assertTrue(listResult.size() > 0);
 
 		// FindById
@@ -47,7 +47,7 @@ public class CurvePointTests extends AbstractConfigurationTest {
 		// Delete
 		Integer id = curvePoint.getId();
 		curvePointService.deleteCurvePoint(curvePoint);
-		Optional<CurvePoint> curvePointList = curvePointRepository.findById(id);
+		Optional<CurvePointModel> curvePointList = curvePointRepository.findById(id);
 		Assert.assertFalse(curvePointList.isPresent());
 	}
 }

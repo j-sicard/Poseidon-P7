@@ -1,6 +1,6 @@
 package com.nnk.springboot.service.impl;
 
-import com.nnk.springboot.domain.Rating;
+import com.nnk.springboot.model.RatingModel;
 import com.nnk.springboot.repositories.RatingRepository;
 import com.nnk.springboot.service.RatingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +14,19 @@ public class RatingServiceImpl implements RatingService {
     @Autowired
     RatingRepository ratingRepository;
 
-    public List<Rating> getAllRatings(){
+    public List<RatingModel> getAllRatings(){
         return ratingRepository.findAll();
     }
 
-    public void saveRating(Rating rating){
+    public void saveRating(RatingModel rating){
          ratingRepository.save(rating);
     }
 
-    public void deleteRating(Rating rating){
+    public void deleteRating(RatingModel rating){
         ratingRepository.delete(rating);
     }
 
-    public Optional<Rating> getbyid(Integer id){
+    public Optional<RatingModel> getbyid(Integer id){
         return ratingRepository.findById(id);
     }
 }

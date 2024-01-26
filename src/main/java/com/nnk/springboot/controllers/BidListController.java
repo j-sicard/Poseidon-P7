@@ -1,6 +1,6 @@
 package com.nnk.springboot.controllers;
 
-import com.nnk.springboot.domain.BidList;
+import com.nnk.springboot.model.BidListModel;
 import com.nnk.springboot.service.BidListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,13 +30,13 @@ public class BidListController {
 
     @GetMapping("/bidList/add")
     public String addBidForm(Model model) {
-        model.addAttribute("bidList", new BidList());
+        model.addAttribute("bidList", new BidListModel());
         logger.info("GetMapping(\"/bidList/add\") successfully");
         return "bidList/add";
     }
 
     @PostMapping("/bidList/validate")
-    public String validate(@Valid BidList bidList, BindingResult result, Model model) {
+    public String validate(@Valid BidListModel bidList, BindingResult result, Model model) {
         if (!result.hasErrors()){
             bigListService.saveBidList(bidList);
             logger.info("recording successfully completed");
@@ -49,14 +49,14 @@ public class BidListController {
     @GetMapping("/bidList/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         // TODO: get Bid by Id and to model then show to the form
-        BidList bidList = bigListService.getbyid(id).orElseThrow(()-> new IllegalArgumentException("Invalid id:" + id));
+        BidListModel bidList = bigListService.getbyid(id).orElseThrow(()-> new IllegalArgumentException("Invalid id:" + id));
         logger.info("/bidList/update/{id}" + bidList.toString());
         model.addAttribute("bidList", bidList);
         return "bidList/update";
     }
 
     @PostMapping("/bidList/update/{id}")
-    public String updateBid(@PathVariable("id") Integer id, @Valid BidList bidList,
+    public String updateBid(@PathVariable("id") Integer id, @Valid BidListModel bidList,
                              BindingResult result, Model model) {
         // TODO: check required fields, if valid call service to update Bid and return list Bid
         if (!bigListService.getbyid(id).isPresent()){
@@ -75,7 +75,7 @@ public class BidListController {
     @GetMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
         // TODO: Find Bid by Id and delete the bid, return to Bid list*
-        BidList bidList = bigListService.getbyid(id).orElseThrow(()-> new IllegalArgumentException("Invalide bid Id:" + id));
+        BidListModel bidList = bigListService.getbyid(id).orElseThrow(()-> new IllegalArgumentException("Invalide bid Id:" + id));
         logger.info("/bidList/delete/{id}" + bidList.toString());
         bigListService.deleteBidList(bidList);
         model.addAttribute("bidList", bigListService.getAllBidLists());

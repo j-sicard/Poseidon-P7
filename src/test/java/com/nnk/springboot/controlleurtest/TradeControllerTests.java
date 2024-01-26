@@ -2,8 +2,7 @@ package com.nnk.springboot.controlleurtest;
 
 import com.nnk.springboot.AbstractConfigurationTest;
 import com.nnk.springboot.controllers.TradeController;
-import com.nnk.springboot.domain.BidList;
-import com.nnk.springboot.domain.Trade;
+import com.nnk.springboot.model.TradeModel;
 import com.nnk.springboot.service.TradeService;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -33,12 +32,12 @@ public class TradeControllerTests extends AbstractConfigurationTest {
 
     @Test
     public void homeTest() {
-        Trade trade = new Trade();
+        TradeModel trade = new TradeModel();
         trade.setAccount("AccountTest");
         trade.setType("TypeTest");
         trade.setBuyQuantity(10.0);
 
-        List<Trade> trades = new ArrayList<>();
+        List<TradeModel> trades = new ArrayList<>();
         trades.add(trade);
 
         when(tradeService.getAllTrades()).thenReturn(trades);
@@ -54,13 +53,13 @@ public class TradeControllerTests extends AbstractConfigurationTest {
 
         assertEquals("trade/add", viewName);
 
-        verify(model).addAttribute(eq("trade"), Mockito.any(Trade.class));
+        verify(model).addAttribute(eq("trade"), Mockito.any(TradeModel.class));
     }
 
     @Test
     public void validateTradeWithNoErrorsTest() {
         // Objet Trade valide
-        Trade trade = new Trade();
+        TradeModel trade = new TradeModel();
         trade.setBuyQuantity(10.0);
 
         // Simuler un BindingResult sans erreurs
@@ -78,7 +77,7 @@ public class TradeControllerTests extends AbstractConfigurationTest {
     @Test
     public void validateTradeWithErrorsTest() {
         // Objet BidList invalide
-        Trade trade = new Trade();
+        TradeModel trade = new TradeModel();
         trade.setBuyQuantity(-10.0);
 
         // Simuler un BindingResult avec des erreurs
@@ -96,7 +95,7 @@ public class TradeControllerTests extends AbstractConfigurationTest {
     @Test
     public void testShowUpdateForm() {
         Integer tradeId = 1;
-        Trade expectedTrade = new Trade();
+        TradeModel expectedTrade = new TradeModel();
         expectedTrade.setTradeId(tradeId);
 
         // retourne l'enchère simulée lorsque getById est appelé
@@ -115,7 +114,7 @@ public class TradeControllerTests extends AbstractConfigurationTest {
     @Test
     public void updateTradeSuccessTest() {
         Integer tradeId = 1;
-        Trade trade = new Trade();
+        TradeModel trade = new TradeModel();
         trade.setTradeId(tradeId);
 
         // Configure le service pour retourner true lorsqu'on vérifie la présence de l'enchère
@@ -139,19 +138,19 @@ public class TradeControllerTests extends AbstractConfigurationTest {
         when(tradeService.getById(tradeId)).thenReturn(Optional.empty());
 
         // Appele la méthode updateTrade et un objet Trade valide
-        String viewName = tradeController.updateTrade(tradeId, new Trade(), mock(BindingResult.class), model);
+        String viewName = tradeController.updateTrade(tradeId, new TradeModel(), mock(BindingResult.class), model);
 
         // Vérifie que la méthode redirige vers "/trade/list"
         assertEquals("redirect:/trade/list", viewName);
 
         // Vérifie que la méthode n'essaie pas de sauvegarder l'enchère
-        verify(tradeService, never()).saveTrade(any(Trade.class));
+        verify(tradeService, never()).saveTrade(any(TradeModel.class));
     }
 
     @Test
     public void updateTradeValidationProblemTest() {
         Integer tradeId = 1;
-        Trade trade = new Trade();
+        TradeModel trade = new TradeModel();
         trade.setTradeId(tradeId);
 
         // Configure le service pour retourner true lorsqu'on vérifie la présence de l'enchère
@@ -168,13 +167,13 @@ public class TradeControllerTests extends AbstractConfigurationTest {
         assertEquals("/trade/add", viewName);
 
         // Vérifie que la méthode n'essaie pas de sauvegarder l'enchère
-        verify(tradeService, never()).saveTrade(any(Trade.class));
+        verify(tradeService, never()).saveTrade(any(TradeModel.class));
     }
 
     @Test
     public void deleteTradeTest() {
         Integer tradeId = 1;
-        Trade trade = new Trade();
+        TradeModel trade = new TradeModel();
         trade.setTradeId(tradeId);
 
         // Configure le service pour retourner l'enchère lorsqu'on vérifie la présence de l'enchère

@@ -1,5 +1,0 @@
-# Created at 2024-01-17T11:45:44.585
-Boot Manifest-JAR contains absolute paths in classpath 'D:\DEV_JAVA\PROJET\Projet_7\JavaDA_PROJECT7_RESTAPI-master\Poseiden-skeleton\target\test-classes'
-Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
-'other' has different root
-

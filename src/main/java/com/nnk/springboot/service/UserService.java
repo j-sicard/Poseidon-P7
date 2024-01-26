@@ -1,17 +1,17 @@
 package com.nnk.springboot.service;
 
-import com.nnk.springboot.domain.User;
+import com.nnk.springboot.model.UserModel;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
 
-    public List<User> getUsers();
+    public List<UserModel> getUsers();
 
-    public Optional<User> getById(Integer id);
+    public Optional<UserModel> getById(Integer id);
 
-    public void deleteUser(User user);
+    public void deleteUser(UserModel user);
 
-    public void saveUser(User user);
+    public void saveUser(UserModel user);
 }

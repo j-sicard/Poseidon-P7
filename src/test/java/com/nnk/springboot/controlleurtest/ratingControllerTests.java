@@ -2,9 +2,7 @@ package com.nnk.springboot.controlleurtest;
 
 import com.nnk.springboot.AbstractConfigurationTest;
 import com.nnk.springboot.controllers.RatingController;
-import com.nnk.springboot.domain.BidList;
-import com.nnk.springboot.domain.CurvePoint;
-import com.nnk.springboot.domain.Rating;
+import com.nnk.springboot.model.RatingModel;
 import com.nnk.springboot.service.RatingService;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -34,13 +32,13 @@ public class ratingControllerTests extends AbstractConfigurationTest {
 
     @Test
     public void homeTest() {
-        Rating rating = new Rating();
+        RatingModel rating = new RatingModel();
         rating.setMoodysRating("MoodysRatingTest");
         rating.setSandPRating("SandPRatingTest");
         rating.setFitchRating("FitchRatingTest");
         rating.setOrderNumber(10);
 
-        List<Rating> ratings = new ArrayList<>();
+        List<RatingModel> ratings = new ArrayList<>();
         ratings.add(rating);
 
         when(ratingService.getAllRatings()).thenReturn(ratings);
@@ -56,13 +54,13 @@ public class ratingControllerTests extends AbstractConfigurationTest {
 
         assertEquals("rating/add", viewName);
 
-        verify(model).addAttribute(eq("rating"), Mockito.any(Rating.class));
+        verify(model).addAttribute(eq("rating"), Mockito.any(RatingModel.class));
     }
 
     @Test
     public void validateRatingWithNoErrorsTest() {
         // Objet Rating valide
-        Rating rating = new Rating();
+        RatingModel rating = new RatingModel();
         rating.setOrderNumber(10);
 
         // Simuler un BindingResult sans erreurs
@@ -80,7 +78,7 @@ public class ratingControllerTests extends AbstractConfigurationTest {
     @Test
     public void validateRatingWithErrorsTest() {
         // Objet Rating invalide
-        Rating rating = new Rating();
+        RatingModel rating = new RatingModel();
         rating.setOrderNumber(-10);
 
         // Simuler un BindingResult avec des erreurs
@@ -98,7 +96,7 @@ public class ratingControllerTests extends AbstractConfigurationTest {
     @Test
     public void testShowUpdateForm() {
         Integer ratinId = 1;
-        Rating expectedRating = new Rating();
+        RatingModel expectedRating = new RatingModel();
         expectedRating.setId(ratinId);
 
         // retourne l'enchère simulée lorsque getbyid est appelé
@@ -117,7 +115,7 @@ public class ratingControllerTests extends AbstractConfigurationTest {
     @Test
     public void updateRatingSuccessTest() {
         Integer ratingId = 1;
-        Rating rating = new Rating();
+        RatingModel rating = new RatingModel();
         rating.setId(ratingId);
 
         // Configure le service pour retourner true lorsqu'on vérifie la présence de l'enchère
@@ -141,19 +139,19 @@ public class ratingControllerTests extends AbstractConfigurationTest {
         when(ratingService.getbyid(ratingId)).thenReturn(Optional.empty());
 
         // Appele la méthode updateRating et un objet Rating valide
-        String viewName = ratingController.updateRating(ratingId, new Rating(), mock(BindingResult.class), model);
+        String viewName = ratingController.updateRating(ratingId, new RatingModel(), mock(BindingResult.class), model);
 
         // Vérifie que la méthode redirige vers "/rating/list"
         assertEquals("redirect:/rating/list", viewName);
 
         // Vérifie que la méthode n'essaie pas de sauvegarder l'enchère
-        verify(ratingService, never()).saveRating(any(Rating.class));
+        verify(ratingService, never()).saveRating(any(RatingModel.class));
     }
 
     @Test
     public void updateRatingValidationProblemTest() {
         Integer ratingId = 1;
-        Rating rating = new Rating();
+        RatingModel rating = new RatingModel();
         rating.setId(ratingId);
 
         // Configure le service pour retourner true lorsqu'on vérifie la présence de l'enchère
@@ -170,13 +168,13 @@ public class ratingControllerTests extends AbstractConfigurationTest {
         assertEquals("/rating/add", viewName);
 
         // Vérifie que la méthode n'essaie pas de sauvegarder l'enchère
-        verify(ratingService, never()).saveRating(any(Rating.class));
+        verify(ratingService, never()).saveRating(any(RatingModel.class));
     }
 
     @Test
     public void testDeleteRating() {
         Integer ratingId = 1;
-        Rating rating = new Rating();
+        RatingModel rating = new RatingModel();
         rating.setId(ratingId);
 
         // Configure le service pour retourner l'enchère lorsqu'on vérifie la présence de l'enchère

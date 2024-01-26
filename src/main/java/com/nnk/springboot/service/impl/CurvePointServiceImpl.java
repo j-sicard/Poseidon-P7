@@ -1,6 +1,6 @@
 package com.nnk.springboot.service.impl;
 
-import com.nnk.springboot.domain.CurvePoint;
+import com.nnk.springboot.model.CurvePointModel;
 import com.nnk.springboot.repositories.CurvePointRepository;
 import com.nnk.springboot.service.CurvePointService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,19 +15,19 @@ public class CurvePointServiceImpl implements CurvePointService {
     @Autowired
     CurvePointRepository curvePointRepository;
 
-    public List<CurvePoint> getAllCurvePoints(){
+    public List<CurvePointModel> getAllCurvePoints(){
     return curvePointRepository.findAll();
     }
 
-    public void saveCurvePoint(CurvePoint curvePoint){
+    public void saveCurvePoint(CurvePointModel curvePoint){
         curvePointRepository.save(curvePoint);
     }
 
-    public void deleteCurvePoint(CurvePoint curvePoint){
+    public void deleteCurvePoint(CurvePointModel curvePoint){
         curvePointRepository.delete(curvePoint);
     }
 
-    public Optional<CurvePoint> getCurvePoint(Integer id){
+    public Optional<CurvePointModel> getCurvePoint(Integer id){
        return curvePointRepository.findById(id);
     }
 

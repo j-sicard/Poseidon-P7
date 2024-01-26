@@ -1,7 +1,7 @@
 package com.nnk.springboot.servicetest;
 
 import com.nnk.springboot.AbstractConfigurationTest;
-import com.nnk.springboot.domain.BidList;
+import com.nnk.springboot.model.BidListModel;
 import com.nnk.springboot.repositories.BidListRepository;
 import com.nnk.springboot.service.BidListService;
 import org.junit.Assert;
@@ -21,7 +21,7 @@ public class BidTests extends AbstractConfigurationTest{
 
 	@Test
 	public void bidListTest() {
-		BidList bidList = new BidList();
+		BidListModel bidList = new BidListModel();
 		bidList.setAccount("Account Test");
 		bidList.setType("Type Test");
 		bidList.setBidQuantity(10.0);
@@ -38,7 +38,7 @@ public class BidTests extends AbstractConfigurationTest{
 
 
 		// Find
-		List<BidList> listResult = bigListService.getAllBidLists();
+		List<BidListModel> listResult = bigListService.getAllBidLists();
 		System.out.println("List size: " + listResult.size());
 		Assert.assertTrue(listResult.size() > 0);
 
@@ -49,7 +49,7 @@ public class BidTests extends AbstractConfigurationTest{
 		// Delete
 		Integer id = bidList.getBidListId();
 		bigListService.deleteBidList(bidList);
-		Optional<BidList> bidLists = bidListRepository.findById(id);
+		Optional<BidListModel> bidLists = bidListRepository.findById(id);
 		Assert.assertFalse(bidLists.isPresent());
 	}
 }

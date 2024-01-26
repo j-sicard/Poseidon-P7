@@ -1,6 +1,6 @@
 package com.nnk.springboot.service.impl;
 
-import com.nnk.springboot.domain.Trade;
+import com.nnk.springboot.model.TradeModel;
 import com.nnk.springboot.repositories.TradeRepository;
 import com.nnk.springboot.service.TradeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +14,19 @@ public class TradeServiceImpl implements TradeService {
     @Autowired
     TradeRepository tradeRepository;
 
-    public List<Trade> getAllTrades(){
+    public List<TradeModel> getAllTrades(){
         return tradeRepository.findAll();
     }
 
-    public void deleteTrade(Trade trade){
+    public void deleteTrade(TradeModel trade){
         tradeRepository.delete(trade);
     }
 
-    public void saveTrade(Trade trade){
+    public void saveTrade(TradeModel trade){
         tradeRepository.save(trade);
     }
 
-    public Optional<Trade> getById(Integer id){
+    public Optional<TradeModel> getById(Integer id){
         return tradeRepository.findById(id);
     }
 

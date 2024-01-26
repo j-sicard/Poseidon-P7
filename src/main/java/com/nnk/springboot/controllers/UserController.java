@@ -1,6 +1,6 @@
 package com.nnk.springboot.controllers;
 
-import com.nnk.springboot.domain.User;
+import com.nnk.springboot.model.UserModel;
 import com.nnk.springboot.repositories.UserRepository;
 import com.nnk.springboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +34,13 @@ public class UserController {
 
     @GetMapping("/user/add")
     public String addUserForm(Model model) {
-        model.addAttribute("user", new User());
+        model.addAttribute("user", new UserModel());
         logger.info("GetMapping(\"/user/add\") successfully");
         return "user/add";
     }
 
     @PostMapping("/user/validate")
-    public String validate(@Valid User user, BindingResult result, Model model) {
+    public String validate(@Valid UserModel user, BindingResult result, Model model) {
         if (!result.hasErrors()) {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             user.setPassword(encoder.encode(user.getPassword()));
@@ -53,14 +53,14 @@ public class UserController {
 
     @GetMapping("/user/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        User user = userService.getById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+        UserModel user = userService.getById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         user.setPassword("");
         model.addAttribute("user", user);
         return "user/update";
     }
 
     @PostMapping("/user/update/{id}")
-    public String updateUser(@PathVariable("id") Integer id, @Valid User user,
+    public String updateUser(@PathVariable("id") Integer id, @Valid UserModel user,
                              BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "user/update";
@@ -76,7 +76,7 @@ public class UserController {
 
     @GetMapping("/user/delete/{id}")
     public String deleteUser(@PathVariable("id") Integer id, Model model) {
-        User user = userService.getById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+        UserModel user = userService.getById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         logger.info(user.toString());
         userService.deleteUser(user);
         model.addAttribute("users", userService.getUsers());
