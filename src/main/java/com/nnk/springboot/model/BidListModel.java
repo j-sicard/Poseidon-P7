@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.sql.Timestamp;
 
 @Entity
@@ -16,10 +17,12 @@ public class BidListModel {
     private Integer BidListId;
 
     @NotBlank(message = "Account is mandatory")
+    @Size(max = 35)
     @Column()
     private  String account;
 
     @NotBlank(message = "Type is mandatory")
+    @Size(max = 35)
     @Column()
     private  String  type;
 

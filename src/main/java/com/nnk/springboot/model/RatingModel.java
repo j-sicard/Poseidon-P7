@@ -13,13 +13,13 @@ public class RatingModel {
     @Column()
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
-    @Size(max=120, message = "The size of moodys Rating must be of maximum 120 characters")
+    @NotNull()
     @Column()
     private String moodysRating;
-    @Size(max=120, message = "The size of sand PRating must be of maximum 120 characters")
+    @NotNull(message = "The size of sand PRating must be not null")
     @Column()
     private String sandPRating;
-    @Size(max=120, message = "The size of fitch Rating must be of maximum 120 characters")
+    @NotNull(message = "The size of sand PRating must be not null")
     @Column()
     private String fitchRating;
     @NotNull(message= "Order Number is mandatory")

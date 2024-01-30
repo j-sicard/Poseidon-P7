@@ -2,14 +2,13 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.model.BidListModel;
 import com.nnk.springboot.service.BidListService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -20,9 +19,15 @@ public class BidListController {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(BidListController.class.getName());
 
+    @ModelAttribute("remoteUser")
+    public Object remoteUser(final HttpServletRequest request) {
+        logger.info("Request.getRemoteUser() is:" + request.getRemoteUser());
+        return request.getRemoteUser();
+    }
+
     @RequestMapping("/bidList/list")
-    public String home(Model model)
-    {
+    public String home(Model model){
+        logger.info("Logged in user: " + SecurityContextHolder.getContext().getAuthentication().getName());
         model.addAttribute("bidList", bigListService.getAllBidLists());
         logger.info("bidList/list : OK");
         return "bidList/list";

@@ -2,6 +2,9 @@ package com.nnk.springboot.model;
 
 import jakarta.persistence.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 @Entity
 @Table(name = "rulename")
 public class RuleNameModel {
@@ -9,16 +12,24 @@ public class RuleNameModel {
     @Column()
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
+    @NotBlank(message= "Rule name is mandatory")
+    @Size(max=120, message = "The size of the name must be of maximum 120 characters")
     @Column()
     private String name;
+    @NotBlank(message = "Description is mandatory")
+    @Size(max=120, message = "The size of the description must be of maximum 120 characters")
     @Column()
     private String description;
+    @Size(max=120)
     @Column()
     private String json;
+    @Size(max=512)
     @Column()
     private String template;
+    @Size(max=120)
     @Column()
     private String sqlStr;
+    @Size(max=120)
     @Column()
     private String sqlPart;
 
