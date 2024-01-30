@@ -2,6 +2,7 @@ package com.nnk.springboot.model;
 
 import jakarta.persistence.*;
 
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -13,16 +14,19 @@ public class RatingModel {
     @Column()
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
-    @NotNull()
+    @NotNull(message = "moodys Rating is mandatory")
+    @Size(max=120, message = "The size of the moodysRating must be of maximum 120 characters")
     @Column()
     private String moodysRating;
-    @NotNull(message = "The size of sand PRating must be not null")
+    @NotNull(message = "sand PRating is mandatory")
+    @Size(max=120, message = "The size of the sandPRating must be of maximum 120 characters")
     @Column()
     private String sandPRating;
     @NotNull(message = "The size of sand PRating must be not null")
     @Column()
     private String fitchRating;
-    @NotNull(message= "Order Number is mandatory")
+    @NotNull(message = "orderNumber is mandatory")
+    @DecimalMin(value = "0", inclusive = false, message = "orderNumber must be positive")
     @Column()
     private Integer orderNumber;
 

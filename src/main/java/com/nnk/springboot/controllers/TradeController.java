@@ -40,7 +40,6 @@ public class TradeController {
 
     @PostMapping("/trade/validate")
     public String validate(@Valid TradeModel trade, BindingResult result, Model model) {
-        // TODO: check data valid and save to db, after saving return Trade list
         if (!result.hasErrors()){
             tradeService.saveTrade(trade);
             logger.info("recording successfully completed");
@@ -52,7 +51,6 @@ public class TradeController {
 
     @GetMapping("/trade/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        // TODO: get Trade by Id and to model then show to the form
         TradeModel trade = tradeService.getById(id).orElseThrow(()-> new IllegalArgumentException("Invalid id:" + id));
         logger.info("/trade/update/{id}" +trade.toString());
         model.addAttribute("trade", trade);
@@ -62,7 +60,6 @@ public class TradeController {
     @PostMapping("/trade/update/{id}")
     public String updateTrade(@PathVariable("id") Integer id, @Valid TradeModel trade,
                              BindingResult result, Model model) {
-        // TODO: check required fields, if valid call service to update Trade and return Trade list
         if (!tradeService.getById(id).isPresent()){
             logger.info("Invalid id:" + id);
             return "redirect:/trade/list";
@@ -78,7 +75,6 @@ public class TradeController {
 
     @GetMapping("/trade/delete/{id}")
     public String deleteTrade(@PathVariable("id") Integer id, Model model) {
-        // TODO: Find Trade by Id and delete the Trade, return to Trade list
         TradeModel trade = tradeService.getById(id).orElseThrow(()-> new  IllegalArgumentException("Invalid id:" + id));
         logger.info( "/trade/delete/{id}" + trade.toString());
         tradeService.deleteTrade(trade);

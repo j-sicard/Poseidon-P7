@@ -4,7 +4,6 @@ import com.nnk.springboot.model.BidListModel;
 import com.nnk.springboot.service.BidListService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,7 +26,6 @@ public class BidListController {
 
     @RequestMapping("/bidList/list")
     public String home(Model model){
-        logger.info("Logged in user: " + SecurityContextHolder.getContext().getAuthentication().getName());
         model.addAttribute("bidList", bigListService.getAllBidLists());
         logger.info("bidList/list : OK");
         return "bidList/list";
@@ -53,7 +51,6 @@ public class BidListController {
 
     @GetMapping("/bidList/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        // TODO: get Bid by Id and to model then show to the form
         BidListModel bidList = bigListService.getbyid(id).orElseThrow(()-> new IllegalArgumentException("Invalid id:" + id));
         logger.info("/bidList/update/{id}" + bidList.toString());
         model.addAttribute("bidList", bidList);
@@ -63,7 +60,6 @@ public class BidListController {
     @PostMapping("/bidList/update/{id}")
     public String updateBid(@PathVariable("id") Integer id, @Valid BidListModel bidList,
                              BindingResult result, Model model) {
-        // TODO: check required fields, if valid call service to update Bid and return list Bid
         if (!bigListService.getbyid(id).isPresent()){
             logger.info("Invalid id:" + id);
             return "redirect:/bidList/list";
@@ -79,7 +75,6 @@ public class BidListController {
 
     @GetMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
-        // TODO: Find Bid by Id and delete the bid, return to Bid list*
         BidListModel bidList = bigListService.getbyid(id).orElseThrow(()-> new IllegalArgumentException("Invalide bid Id:" + id));
         logger.info("/bidList/delete/{id}" + bidList.toString());
         bigListService.deleteBidList(bidList);

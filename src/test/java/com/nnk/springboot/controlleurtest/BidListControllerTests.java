@@ -8,6 +8,10 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
@@ -49,9 +53,7 @@ public class BidListControllerTests extends AbstractConfigurationTest {
     @Test
     public void addBidFormTest() {
         String viewName = bidListController.addBidForm(model);
-
         assertEquals("bidList/add", viewName);
-
         verify(model).addAttribute(eq("bidList"), Mockito.any(BidListModel.class));
     }
 

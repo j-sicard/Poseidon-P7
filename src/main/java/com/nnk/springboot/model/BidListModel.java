@@ -17,12 +17,12 @@ public class BidListModel {
     private Integer BidListId;
 
     @NotBlank(message = "Account is mandatory")
-    @Size(max = 35)
+    @Size(max = 35, message = "The size of the sandPRating must be of maximum 35 characters")
     @Column()
     private  String account;
 
     @NotBlank(message = "Type is mandatory")
-    @Size(max = 35)
+    @Size(max = 35, message = "The size of the sandPRating must be of maximum 35 characters")
     @Column()
     private  String  type;
 

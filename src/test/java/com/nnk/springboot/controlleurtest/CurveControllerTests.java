@@ -48,10 +48,7 @@ public class CurveControllerTests extends AbstractConfigurationTest {
 
     @Test
     public void addCurveFormTest() {
-        String viewName = curveController.addCurveForm(model);
-
-        assertEquals("curvePoint/add", viewName);
-
+        assertEquals("curvePoint/add", curveController.addCurveForm(model));
         verify(model).addAttribute(eq("curvePoint"), Mockito.any(CurvePointModel.class));
     }
 
@@ -70,7 +67,7 @@ public class CurveControllerTests extends AbstractConfigurationTest {
 
         verify(curvePointService, times(1)).saveCurvePoint(curvePoint);
 
-        assertEquals("redirect:curvePoint/list", viewName);
+        assertEquals("redirect:/curvePoint/list", viewName);
     }
 
     @Test

@@ -40,7 +40,6 @@ public class RuleNameController {
 
     @PostMapping("/ruleName/validate")
     public String validate(@Valid RuleNameModel ruleName, BindingResult result, Model model) {
-        // TODO: check data valid and save to db, after saving return RuleName list
         if (!result.hasErrors()){
             ruleNameService.saveRuleName(ruleName);
             logger.info("recording successfully completed");
@@ -52,7 +51,6 @@ public class RuleNameController {
 
     @GetMapping("/ruleName/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        // TODO: get RuleName by Id and to model then show to the form
         RuleNameModel ruleName = ruleNameService.getById(id).orElseThrow(() -> new IllegalArgumentException("Invalid id:" + id));
         logger.info("/ruleName/update/{id}" + ruleName.toString());
         model.addAttribute("ruleName", ruleName);
@@ -62,7 +60,6 @@ public class RuleNameController {
     @PostMapping("/ruleName/update/{id}")
     public String updateRuleName(@PathVariable("id") Integer id, @Valid RuleNameModel ruleName,
                              BindingResult result, Model model) {
-        // TODO: check required fields, if valid call service to update RuleName and return RuleName list
         if (!ruleNameService.getById(ruleName.getId()).isPresent()){
             logger.info("Invalid id:" + id);
             return "redirect:/ruleName/list";
@@ -78,7 +75,6 @@ public class RuleNameController {
 
     @GetMapping("/ruleName/delete/{id}")
     public String deleteRuleName(@PathVariable("id") Integer id, Model model) {
-        // TODO: Find RuleName by Id and delete the RuleName, return to Rule list
         RuleNameModel ruleName = ruleNameService.getById(id).orElseThrow(()-> new IllegalArgumentException("Invalid id:" + id));
         logger.info("/ruleName/delete/{id}" +  ruleName.toString());
         ruleNameService.deleteRuleName(ruleName);
