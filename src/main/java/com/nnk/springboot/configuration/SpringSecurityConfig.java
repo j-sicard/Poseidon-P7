@@ -38,15 +38,18 @@ public class SpringSecurityConfig  {
                 .logout((logout) -> logout.permitAll());
         return http.build();
     }
-    /*Configuration déclarative*/
- /*   @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers("/bidList/**", "/curvePoint/**", "/rating/**", "/ruleName/**", "/trade/**").hasRole("ADMIN");
-            auth.requestMatchers("/bidList/**", "/curvePoint/**", "/rating/**", "/ruleName/**", "/trade/**").hasRole("USER");
-            auth.anyRequest().authenticated();
-        }).formLogin(Customizer.withDefaults()).build();
-    }*/
+
+    /**
+     * Configure et retourne un gestionnaire d'authentification.
+     * <p>
+     * Cette méthode configure le gestionnaire d'authentification à utiliser avec
+     * l'encodeur de mot de passe spécifié et le système de sécurité HTTP.
+     *
+     * @param http Le contexte de sécurité HTTP à configurer.
+     * @param bCryptPasswordEncoder L'encodeur de mot de passe BCrypt à utiliser.
+     * @return Un objet AuthenticationManager configuré.
+     * @throws Exception Si une erreur se produit lors de la configuration du gestionnaire.
+     */
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);

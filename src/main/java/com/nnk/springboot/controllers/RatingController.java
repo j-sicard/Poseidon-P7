@@ -82,4 +82,6 @@ public class RatingController {
         model.addAttribute("rating", ratingService.getAllRatings());
         return "redirect:/rating/list";
     }
+
+
 }

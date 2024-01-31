@@ -81,4 +81,5 @@ public class TradeController {
         model.addAttribute("trade", tradeService.getAllTrades());
         return "redirect:/trade/list";
     }
+
 }

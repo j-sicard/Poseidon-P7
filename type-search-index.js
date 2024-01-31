@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"com.nnk.springboot.configuration","l":"CustomUserDetailsService"},{"p":"com.nnk.springboot.configuration","l":"SpringSecurityConfig"}];updateSearchResults();

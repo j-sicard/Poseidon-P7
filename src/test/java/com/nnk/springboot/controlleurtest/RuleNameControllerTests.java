@@ -65,11 +65,11 @@ public class RuleNameControllerTests extends AbstractConfigurationTest {
         RuleNameModel ruleName = new RuleNameModel();
         ruleName.setName("NameTest");
 
-        // Simuler un BindingResult sans erreurs
+        // Simule un BindingResult sans erreurs
         BindingResult result = mock(BindingResult.class);
         when(result.hasErrors()).thenReturn(false);
 
-        // Appeler la méthode validate
+        // Appele la méthode validate
         String viewName = ruleNameController.validate(ruleName, result, model);
 
         verify(ruleNameService, times(1)).saveRuleName(ruleName);
@@ -83,7 +83,7 @@ public class RuleNameControllerTests extends AbstractConfigurationTest {
         RuleNameModel ruleName = new RuleNameModel();
         ruleName.setName("10");
 
-        // Simuler un BindingResult avec des erreurs
+        // Simule un BindingResult avec des erreurs
         BindingResult result = mock(BindingResult.class);
         when(result.hasErrors()).thenReturn(true);
 
@@ -91,7 +91,7 @@ public class RuleNameControllerTests extends AbstractConfigurationTest {
 
         verify(ruleNameService, never()).saveRuleName(ruleName);
 
-        // Vérifier que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
+        // Vérifie que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
         assertEquals("ruleName/add", viewName);
     }
 

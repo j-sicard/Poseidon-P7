@@ -8,10 +8,6 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
@@ -63,11 +59,11 @@ public class BidListControllerTests extends AbstractConfigurationTest {
         BidListModel bidList = new BidListModel();
         bidList.setBidQuantity(10.0);
 
-        // Simuler un BindingResult sans erreurs
+        // Simule un BindingResult sans erreurs
         BindingResult result = mock(BindingResult.class);
         when(result.hasErrors()).thenReturn(false);
 
-        // Appeler la méthode validate
+        // Appele la méthode validate
         String viewName = bidListController.validate(bidList, result, model);
 
         verify(bidListService, times(1)).saveBidList(bidList);
@@ -81,7 +77,7 @@ public class BidListControllerTests extends AbstractConfigurationTest {
         BidListModel bidList = new BidListModel();
         bidList.setBidQuantity(-5.0);
 
-        // Simuler un BindingResult avec des erreurs
+        // Simule un BindingResult avec des erreurs
         BindingResult result = mock(BindingResult.class);
         when(result.hasErrors()).thenReturn(true);
 
@@ -89,7 +85,7 @@ public class BidListControllerTests extends AbstractConfigurationTest {
 
         verify(bidListService, never()).saveBidList(bidList);
 
-        // Vérifier que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
+        // Vérifie que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
         assertEquals("bidList/add", viewName);
     }
 
@@ -102,7 +98,7 @@ public class BidListControllerTests extends AbstractConfigurationTest {
         // retourne l'enchère simulée lorsque getById est appelé
         when(bidListService.getbyid(bidListId)).thenReturn(Optional.of(expectedBidList));
 
-        // Appelez la méthode showUpdateForm
+        // Appele la méthode showUpdateForm
         String viewName = bidListController.showUpdateForm(bidListId, model);
 
         // Vérifie que l'objet BidList a été ajouté au modèle avec le nom "bidList"

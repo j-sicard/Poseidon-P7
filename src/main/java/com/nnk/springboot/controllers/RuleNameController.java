@@ -81,4 +81,6 @@ public class RuleNameController {
         model.addAttribute("ruleName", ruleNameService.getAllRuleNames());
         return "redirect:/ruleName/list";
     }
+
+
 }

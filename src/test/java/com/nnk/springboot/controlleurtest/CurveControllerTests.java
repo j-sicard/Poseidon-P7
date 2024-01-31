@@ -58,11 +58,11 @@ public class CurveControllerTests extends AbstractConfigurationTest {
         CurvePointModel curvePoint = new CurvePointModel();
         curvePoint.setValue(10.0);
 
-        // Simuler un BindingResult sans erreurs
+        // Simule un BindingResult sans erreurs
         BindingResult result = mock(BindingResult.class);
         when(result.hasErrors()).thenReturn(false);
 
-        // Appeler la méthode validate
+        // Appele la méthode validate
         String viewName = curveController.validate(curvePoint, result, model);
 
         verify(curvePointService, times(1)).saveCurvePoint(curvePoint);
@@ -76,7 +76,7 @@ public class CurveControllerTests extends AbstractConfigurationTest {
         CurvePointModel curvePoint = new CurvePointModel();
         curvePoint.setValue(-5.0);
 
-        // Simuler un BindingResult avec des erreurs
+        // Simule un BindingResult avec des erreurs
         BindingResult result = mock(BindingResult.class);
         when(result.hasErrors()).thenReturn(true);
 
@@ -84,7 +84,7 @@ public class CurveControllerTests extends AbstractConfigurationTest {
 
         verify(curvePointService, never()).saveCurvePoint(curvePoint);
 
-        // Vérifier que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
+        // Vérifie que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
         assertEquals("curvePoint/add", viewName);
     }
 
@@ -97,7 +97,7 @@ public class CurveControllerTests extends AbstractConfigurationTest {
         // retourne l'enchère simulée lorsque getCurvePoint est appelé
         when(curvePointService.getCurvePoint(curveId)).thenReturn(Optional.of(expectedCurvePoint));
 
-        // Appelez la méthode showUpdateForm
+        // Appele la méthode showUpdateForm
         String viewName = curveController.showUpdateForm(curveId, model);
 
         // Vérifie que l'objet CurvePoint a été ajouté au modèle avec le nom "curvePoint"

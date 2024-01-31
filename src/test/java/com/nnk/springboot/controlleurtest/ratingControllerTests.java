@@ -63,11 +63,11 @@ public class ratingControllerTests extends AbstractConfigurationTest {
         RatingModel rating = new RatingModel();
         rating.setOrderNumber(10);
 
-        // Simuler un BindingResult sans erreurs
+        // Simule un BindingResult sans erreurs
         BindingResult result = mock(BindingResult.class);
         when(result.hasErrors()).thenReturn(false);
 
-        // Appeler la méthode validate
+        // Appele la méthode validate
         String viewName = ratingController.validate(rating, result, model);
 
         verify(ratingService, times(1)).saveRating(rating);
@@ -81,7 +81,7 @@ public class ratingControllerTests extends AbstractConfigurationTest {
         RatingModel rating = new RatingModel();
         rating.setOrderNumber(-10);
 
-        // Simuler un BindingResult avec des erreurs
+        // Simule un BindingResult avec des erreurs
         BindingResult result = mock(BindingResult.class);
         when(result.hasErrors()).thenReturn(true);
 
@@ -89,7 +89,7 @@ public class ratingControllerTests extends AbstractConfigurationTest {
 
         verify(ratingService, never()).saveRating(rating);
 
-        // Vérifier que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
+        // Vérifie que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
         assertEquals("rating/add", viewName);
     }
 
@@ -102,7 +102,7 @@ public class ratingControllerTests extends AbstractConfigurationTest {
         // retourne l'enchère simulée lorsque getbyid est appelé
         when(ratingService.getbyid(ratinId)).thenReturn(Optional.of(expectedRating));
 
-        // Appelez la méthode showUpdateForm
+        // Appele la méthode showUpdateForm
         String viewName = ratingController.showUpdateForm(ratinId, model);
 
         // Vérifie que l'objet Rating a été ajouté au modèle avec le nom "rating"

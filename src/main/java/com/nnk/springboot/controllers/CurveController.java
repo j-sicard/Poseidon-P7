@@ -83,5 +83,4 @@ public class CurveController {
         return "redirect:/curvePoint/list";
     }
 
-
 }

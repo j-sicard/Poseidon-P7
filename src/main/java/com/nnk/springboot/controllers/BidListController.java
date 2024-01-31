@@ -81,4 +81,9 @@ public class BidListController {
         model.addAttribute("bidList", bigListService.getAllBidLists());
         return "redirect:/bidList/list";
     }
+
+    @PostMapping("/app-logout")
+    public String handleLogout() {
+        return "redirect:/logout";
+    }
 }
