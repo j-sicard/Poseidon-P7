@@ -8,12 +8,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
+
+    private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
 
     public List<UserModel> getUsers(){
         return userRepository.findAll();
@@ -29,5 +34,12 @@ public class UserServiceImpl implements UserService {
 
     public void saveUser(UserModel user){
         userRepository.save(user);
+    }
+
+    public boolean validatePassword(String password) {
+        if (password == null) {
+            return false;
+        }
+        return pattern.matcher(password).matches();
     }
 }

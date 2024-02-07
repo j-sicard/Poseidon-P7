@@ -41,12 +41,14 @@ public class UserController {
 
     @PostMapping("/user/validate")
     public String validate(@Valid UserModel user, BindingResult result, Model model) {
-        if (!result.hasErrors()) {
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            user.setPassword(encoder.encode(user.getPassword()));
-            userService.saveUser(user);
-            model.addAttribute("users", userService.getUsers());
-            return "redirect:/user/list";
+        if (userService.validatePassword(user.getPassword()) == true){
+            if (!result.hasErrors()) {
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                user.setPassword(encoder.encode(user.getPassword()));
+                userService.saveUser(user);
+                model.addAttribute("users", userService.getUsers());
+                return "redirect:/user/list";
+            }
         }
         return "user/add";
     }
@@ -65,12 +67,14 @@ public class UserController {
         if (result.hasErrors()) {
             return "user/update";
         }
-
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        user.setPassword(encoder.encode(user.getPassword()));
-        user.setId(id);
-        userService.saveUser(user);
-        model.addAttribute("users", userService.getUsers());
+        if (userService.validatePassword(user.getPassword()) == true){
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            user.setPassword(encoder.encode(user.getPassword()));
+            user.setId(id);
+            userService.saveUser(user);
+            model.addAttribute("users", userService.getUsers());
+            return "redirect:/user/list";
+        }
         return "redirect:/user/list";
     }
 

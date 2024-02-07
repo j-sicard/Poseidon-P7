@@ -27,10 +27,6 @@ public class BigListServiceImpl implements BidListService {
         bidListRepository.delete(bidList);
     }
 
-    public Boolean checkIfExist(Integer id){
-      return bidListRepository.existsById(id);
-    }
-
     public Optional<BidListModel> getbyid(Integer id){
         return bidListRepository.findById(id);
     }

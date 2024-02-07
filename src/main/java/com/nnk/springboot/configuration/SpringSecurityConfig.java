@@ -4,15 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 
@@ -23,20 +18,25 @@ public class SpringSecurityConfig  {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
-
-    /*Syntaxe fonctionnelle*/
+    // Configuration de la chaîne de filtres de sécurité pour les requêtes HTTP
    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+       // Configurer les autorisations pour les différentes URL de l'application
         http
                 .authorizeRequests((requests)-> requests
+                // Autoriser l'accès aux URL spécifiées pour les utilisateurs ayant les rôles USER ou ADMIN
                 .requestMatchers("/user/**", "/bidList/**", "/curvePoint/**", "/rating/**", "/ruleName/**", "/trade/**").hasAnyRole("USER", "ADMIN")
+                // Toutes les autres requêtes doivent être authentifiées
                 .anyRequest().authenticated()
         )
+                // Configurer le formulaire de connexion
                 .formLogin((form) -> form
-                        .permitAll()
+                        .permitAll()// Permettre à tous les utilisateurs d'accéder au formulaire de connexion
                 )
-                .logout((logout) -> logout.permitAll());
-        return http.build();
+                // Configurer la déconnexion
+                .logout((logout) -> logout.permitAll());// Permettre à tous les utilisateurs de se déconnecter
+       // Construire et retourner la chaîne de filtres de sécurité configurée
+       return http.build();
     }
 
     /**
@@ -57,8 +57,10 @@ public class SpringSecurityConfig  {
         return authenticationManagerBuilder.build();
     }
 
+    // Configuration d'un bean pour utiliser BCryptPasswordEncoder
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
+        // Retourne une instance de BCryptPasswordEncoder pour encoder les mots de passe
         return new BCryptPasswordEncoder();
     }
 

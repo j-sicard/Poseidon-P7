@@ -2,6 +2,7 @@ package com.nnk.springboot.model;
 import jakarta.persistence.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
@@ -14,6 +15,7 @@ public class UserModel {
     @NotBlank(message = "Username is mandatory")
     private String username;
     @Column()
+    @Size(min = 8, message = "The size of the password must be of minimum 8 characters")
     @NotBlank(message = "Password is mandatory")
     private String password;
     @Column()

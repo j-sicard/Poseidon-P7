@@ -5,9 +5,11 @@ import com.nnk.springboot.controllers.UserController;
 import com.nnk.springboot.model.UserModel;
 import com.nnk.springboot.service.UserService;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
@@ -19,6 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.never;
+import static org.junit.Assert.assertTrue;
+
 
 public class UserControllerTests extends AbstractConfigurationTest {
     @InjectMocks
@@ -58,24 +62,54 @@ public class UserControllerTests extends AbstractConfigurationTest {
     }
 
     @Test
-    public void validateBidListWithNoErrorsTest() {
-        // Objet User valide
+    public void updateUserWithValidPasswordTest() {
+        // Créer un objet UserModel avec un mot de passe valide
         UserModel user = new UserModel();
         user.setRole("USER");
         user.setPassword("unMotDePasseValide");
 
-        // Simuler un BindingResult sans erreurs
+        // Simule un BindingResult sans erreurs
         BindingResult result = mock(BindingResult.class);
         when(result.hasErrors()).thenReturn(false);
 
-        // Appeler la méthode validate
-        String viewName = userController.validate(user, result, model);
+        // Simule la validation du mot de passe
+        when(userService.validatePassword(user.getPassword())).thenReturn(true);
 
-        verify(userService, times(1)).saveUser(user);
+        // Appele la méthode updateUser
+        String viewName = userController.updateUser(1, user, result, model);
 
+        // Vérifie si le mot de passe a été encodé
+        ArgumentCaptor<UserModel> userCaptor = ArgumentCaptor.forClass(UserModel.class);
+        verify(userService, times(1)).saveUser(userCaptor.capture());
+        assertTrue(new BCryptPasswordEncoder().matches("unMotDePasseValide", userCaptor.getValue().getPassword()));
+
+        // Vérifier si la redirection est correcte
         assertEquals("redirect:/user/list", viewName);
     }
 
+    @Test
+    public void updateUserWithInvalidPasswordTest() {
+        // objet UserModel avec un mot de passe invalide
+        UserModel user = new UserModel();
+        user.setRole("USER");
+        user.setPassword("unMotDePasseInvalide");
+
+        // Simule un BindingResult sans erreurs
+        BindingResult result = mock(BindingResult.class);
+        when(result.hasErrors()).thenReturn(false);
+
+        // Simule la validation du mot de passe
+        when(userService.validatePassword(user.getPassword())).thenReturn(false);
+
+        // Appele la méthode updateUser
+        String viewName = userController.updateUser(1, user, result, model);
+
+        // Vérifie si la méthode saveUser n'a pas été appelée
+        verify(userService, never()).saveUser(any());
+
+        // Vérifie si la redirection est correcte
+        assertEquals("redirect:/user/list", viewName);
+    }
 
     @Test
     public void validateBidListWithErrorsTest() {
@@ -83,7 +117,7 @@ public class UserControllerTests extends AbstractConfigurationTest {
         UserModel user = new UserModel();
         user.setRole("visiteur");
 
-        // Simuler un BindingResult avec des erreurs
+        // Simule un BindingResult avec des erreurs
         BindingResult result = mock(BindingResult.class);
         when(result.hasErrors()).thenReturn(true);
 
@@ -91,7 +125,7 @@ public class UserControllerTests extends AbstractConfigurationTest {
 
         verify(userService, never()).deleteUser(user);
 
-        // Vérifier que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
+        // Vérifie que la vue renvoyée est la vue d'ajout (car il y a des erreurs)
         assertEquals("user/add", viewName);
     }
 

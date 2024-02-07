@@ -9,6 +9,5 @@ public interface BidListService {
     public List<BidListModel> getAllBidLists();
     public void saveBidList(BidListModel bidList);
     public void deleteBidList(BidListModel bidList);
-    public Boolean checkIfExist(Integer id);
     public Optional<BidListModel> getbyid(Integer id);
 }
